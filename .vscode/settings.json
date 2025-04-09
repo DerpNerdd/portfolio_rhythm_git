@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "portfolio_rhythm.sln"
+    "dotnet.defaultSolution": "portfolio_rhythm_git.sln"
 }
