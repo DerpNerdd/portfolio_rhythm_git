@@ -49,6 +49,18 @@ public class HoverScale : MonoBehaviour
         }
     }
 
+    public void UpdateOriginalScales()
+    {
+        if (pinkCircle != null)
+        {
+            originalCircleScale = pinkCircle.transform.localScale;
+        }
+        if (barsParent != null)
+        {
+            originalBarsScale = barsParent.transform.localScale;
+        }
+    }
+
     void Update()
     {
         bool isHovered = false;

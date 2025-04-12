@@ -28,13 +28,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask:
+        m_Texture: {fileID: 2800000, guid: f7392005d5c63a14e9b444ec625fcc43, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask2:
         m_Texture: {fileID: 2800000, guid: ba0a45bbe0474434cb4c299b40db44e2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BorderThickness: 0.042
-    - _MaskOpacity: 0.083
+    - _BorderThickness: 0.027
+    - _Mask2Opacity: 0.287
+    - _MaskOpacity: 1
+    - _MaskRotation: 0
     m_Colors:
     - _BorderColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.937, g: 0.23099995, b: 0.616, a: 1}
