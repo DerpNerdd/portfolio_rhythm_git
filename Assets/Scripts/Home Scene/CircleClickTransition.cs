@@ -12,9 +12,12 @@ public class CircleClickTransition : MonoBehaviour
     public HoverScale hoverScaleScript;
     [Tooltip("Reference to the GrayNavbar object (with NavbarFadeIn attached) that will fade in.")]
     public NavbarFadeIn navbar;
-    [Tooltip("Reference to the parent GameObject that holds all the buttons which should fade in. Make sure it has a CanvasGroup component set to non-interactable initially.")]
+    [Tooltip("Reference to the parent GameObject that holds all the buttons which should fade in. Ensure it has a CanvasGroup set to alpha 0 and not interactable initially.")]
     public Transform buttonsGroup;
-    
+    // Public field for the 3D top navbar (with TopBarSlideIn attached).
+    [Tooltip("Reference to the 3D Top Navbar (with TopBarSlideIn attached).")]
+    public TopBarSlideIn3D topNavbar;
+
     [Header("Transition Settings")]
     [Tooltip("Target x,y position for both groups after click (their original z-values are preserved).")]
     public Vector2 targetPositionXY = new Vector2(-2.55f, -0.2f);
@@ -22,25 +25,25 @@ public class CircleClickTransition : MonoBehaviour
     public float circleScaleMultiplier = 0.6f;
     [Tooltip("For the visualizer bars, use 1 to keep the same size, or adjust as needed.")]
     public float barsScaleMultiplier = 1f;
-    [Tooltip("Duration of the transition (in seconds).")]
+    [Tooltip("Duration of the transition (in seconds). Also set the fade durations in the fade scripts to this value.")]
     public float transitionDuration = 1f;
-    
+
     private bool hasTransitioned = false;
-    
+
     void OnMouseDown()
     {
         Debug.Log("CircleClickTransition: OnMouseDown triggered on " + gameObject.name);
         if (!hasTransitioned)
         {
             hasTransitioned = true;
-            
+
             // Disable HoverScale to prevent interference.
             if (hoverScaleScript != null)
             {
                 hoverScaleScript.enabled = false;
                 Debug.Log("CircleClickTransition: HoverScale disabled.");
             }
-            
+
             // Start the navbar fade concurrently.
             if (navbar != null)
             {
@@ -48,29 +51,37 @@ public class CircleClickTransition : MonoBehaviour
                 Debug.Log("CircleClickTransition: NavbarFadeIn.FadeIn() called concurrently.");
             }
             
+            // Start the top navbar slide in concurrently.
+            if (topNavbar != null)
+            {
+                topNavbar.SlideIn();
+                Debug.Log("CircleClickTransition: TopBarSlideIn3D.SlideIn() called concurrently.");
+            }
+            else
+            {
+                Debug.LogError("CircleClickTransition: topNavbar is not assigned in the inspector!");
+            }
+
             // Trigger fade in for each button in the buttonsGroup.
             if (buttonsGroup != null)
             {
-                // Also disable button interactions via CanvasGroup until fade completes.
                 CanvasGroup cg = buttonsGroup.GetComponent<CanvasGroup>();
                 if (cg != null)
                 {
-                    cg.alpha = 0; // already 0 initially, but just in case.
+                    cg.alpha = 0; 
                     cg.interactable = false;
                     cg.blocksRaycasts = false;
                 }
-                
+
                 foreach (Transform child in buttonsGroup)
                 {
-                    // Trigger fade in for the button image.
                     var fadeIn = child.GetComponent<UIFadeIn>();
                     if (fadeIn != null)
                     {
                         fadeIn.FadeIn();
                         Debug.Log("CircleClickTransition: UIFadeIn triggered on " + child.name);
                     }
-                    
-                    // Trigger fade in for any graphic on the button (like text).
+
                     UIFadeInGraphic[] graphicFades = child.GetComponentsInChildren<UIFadeInGraphic>();
                     foreach (var gf in graphicFades)
                     {
@@ -79,20 +90,18 @@ public class CircleClickTransition : MonoBehaviour
                     }
                 }
             }
-            
+
             StartCoroutine(DoTransition());
         }
     }
-    
+
     IEnumerator DoTransition()
     {
-        // Record starting positions and scales.
         Vector3 initialPosCircle = pinkCircle.position;
         Vector3 initialPosBars = barsGroup.position;
         Vector3 initialScaleCircle = pinkCircle.localScale;
         Vector3 initialScaleBars = barsGroup.localScale;
-        
-        // Calculate target scales relative to each object's original scale.
+
         Vector3 targetScaleCircle = new Vector3(
             initialScaleCircle.x * circleScaleMultiplier,
             initialScaleCircle.y * circleScaleMultiplier,
@@ -103,16 +112,14 @@ public class CircleClickTransition : MonoBehaviour
             initialScaleBars.y * barsScaleMultiplier,
             initialScaleBars.z
         );
-        
+
         float elapsed = 0f;
         while (elapsed < transitionDuration)
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / transitionDuration);
-            // Quadratic ease in/out.
             float easeT = t < 0.5f ? 2f * t * t : -1f + (4f - 2f * t) * t;
-            
-            // Lerp positions for x and y, preserving original z.
+
             pinkCircle.position = new Vector3(
                 Mathf.Lerp(initialPosCircle.x, targetPositionXY.x, easeT),
                 Mathf.Lerp(initialPosCircle.y, targetPositionXY.y, easeT),
@@ -123,34 +130,30 @@ public class CircleClickTransition : MonoBehaviour
                 Mathf.Lerp(initialPosBars.y, targetPositionXY.y, easeT),
                 initialPosBars.z
             );
-            
-            // Lerp scales for x and y, preserving original z.
+
             float newScaleX_Circle = Mathf.Lerp(initialScaleCircle.x, targetScaleCircle.x, easeT);
             float newScaleY_Circle = Mathf.Lerp(initialScaleCircle.y, targetScaleCircle.y, easeT);
             pinkCircle.localScale = new Vector3(newScaleX_Circle, newScaleY_Circle, initialScaleCircle.z);
-            
+
             float newScaleX_Bars = Mathf.Lerp(initialScaleBars.x, targetScaleBars.x, easeT);
             float newScaleY_Bars = Mathf.Lerp(initialScaleBars.y, targetScaleBars.y, easeT);
             barsGroup.localScale = new Vector3(newScaleX_Bars, newScaleY_Bars, initialScaleBars.z);
-            
+
             yield return null;
         }
-        // Ensure final state.
         pinkCircle.position = new Vector3(targetPositionXY.x, targetPositionXY.y, initialPosCircle.z);
         barsGroup.position = new Vector3(targetPositionXY.x, targetPositionXY.y, initialPosBars.z);
         pinkCircle.localScale = targetScaleCircle;
         barsGroup.localScale = targetScaleBars;
         Debug.Log("CircleClickTransition: Transition complete.");
-        
-        // Update the BeatBounce baseline so that bouncing now uses the new size.
+
         BeatBounce bounce = pinkCircle.GetComponent<BeatBounce>();
-        if(bounce != null)
+        if (bounce != null)
         {
             bounce.UpdateInitialScale();
             Debug.Log("CircleClickTransition: BeatBounce initial scale updated.");
         }
-        
-        // Now, enable the button interactions via CanvasGroup so they can respond to hovers.
+
         if (buttonsGroup != null)
         {
             CanvasGroup cg = buttonsGroup.GetComponent<CanvasGroup>();

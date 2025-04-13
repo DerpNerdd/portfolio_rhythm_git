@@ -293,7 +293,7 @@ MonoBehaviour:
   targetLetterSpacing: 100
   textAnimDuration: 2
   maxTextWidth: 1000
-  flashFadeTime: 0.3
+  flashFadeTime: 0.25
   homeSceneName: Home Scene
 --- !u!4 &394529999
 Transform:
