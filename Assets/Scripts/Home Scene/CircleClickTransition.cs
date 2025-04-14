@@ -18,6 +18,10 @@ public class CircleClickTransition : MonoBehaviour
     [Tooltip("Reference to the 3D Top Navbar (with TopBarSlideIn attached).")]
     public TopBarSlideIn3D topNavbar;
 
+    // NEW: Reference to the AnalogClock component that is hidden until the pink circle is clicked.
+    [Tooltip("Reference to the AnalogClock script that needs to be reset (disable/enable) when the pink circle is clicked.")]
+    public AnalogClock analogClockScript;
+
     [Header("Transition Settings")]
     [Tooltip("Target x,y position for both groups after click (their original z-values are preserved).")]
     public Vector2 targetPositionXY = new Vector2(-2.55f, -0.2f);
@@ -60,6 +64,16 @@ public class CircleClickTransition : MonoBehaviour
             else
             {
                 Debug.LogError("CircleClickTransition: topNavbar is not assigned in the inspector!");
+            }
+
+            // NEW: Quickly disable and then enable the AnalogClock script to force it to update.
+            if (analogClockScript != null)
+            {
+                StartCoroutine(ResetClockRoutine());
+            }
+            else
+            {
+                Debug.LogWarning("CircleClickTransition: analogClockScript is not assigned in the inspector!");
             }
 
             // Trigger fade in for each button in the buttonsGroup.
@@ -165,5 +179,13 @@ public class CircleClickTransition : MonoBehaviour
                 Debug.Log("CircleClickTransition: Buttons CanvasGroup set to interactable.");
             }
         }
+    }
+
+    IEnumerator ResetClockRoutine()
+    {
+        // Quickly disable and then enable the AnalogClock script.
+        analogClockScript.enabled = false;
+        yield return new WaitForSeconds(0.01f);
+        analogClockScript.enabled = true;
     }
 }
