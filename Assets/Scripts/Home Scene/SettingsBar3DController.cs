@@ -6,7 +6,14 @@ public class SettingsBar3DController : MonoBehaviour
     [Header("Settings Bar Reference")]
     [Tooltip("Reference to the 3D settings bar that will be animated. If left empty, it uses this GameObject's transform.")]
     public Transform settingsBar;
-
+    
+    [Tooltip("The root object that contains the settings bar and all its children that should be considered 'inside'. If not set, settingsBar is used.")]
+    public Transform settingsAreaRoot;
+    
+    [Header("Additional Ignore Area")]
+    [Tooltip("Clicks on this object (or any of its children) will be ignored (won't close the settings bar). For example, assign the PinkCircleQuad here.")]
+    public Transform ignoreClickArea;
+    
     [Header("Slide Positions (World Space)")]
     [Tooltip("The world-space position where the settings bar is fully visible (open).")]
     public Vector3 openPosition = new Vector3(0f, 0f, 0f);
@@ -20,6 +27,10 @@ public class SettingsBar3DController : MonoBehaviour
     [Header("Dim Overlay")]
     [Tooltip("Reference to the DimOverlayController that handles dimming the background.")]
     public DimOverlayController dimOverlay;
+    
+    [Header("Main Buttons Disable (Optional)")]
+    [Tooltip("The CanvasGroup of the main buttons you want to disable when the settings bar is open.")]
+    public CanvasGroup mainButtonsGroup;
 
     private bool isOpen = false;
     private bool isSliding = false;
@@ -30,11 +41,16 @@ public class SettingsBar3DController : MonoBehaviour
         {
             settingsBar = transform;
         }
+        // If settingsAreaRoot isn't set, default to settingsBar.
+        if (settingsAreaRoot == null)
+        {
+            settingsAreaRoot = settingsBar;
+        }
         // Start in the closed state.
         settingsBar.position = closedPosition;
     }
 
-    // This public method can be linked to your settings button's OnClick event.
+    // This public method should be linked to your settings button's OnClick event.
     public void ToggleSettingsBar()
     {
         if (isSliding)
@@ -50,13 +66,15 @@ public class SettingsBar3DController : MonoBehaviour
     {
         if (isSliding)
             return;
-        
-        // Fade in the dim overlay if it's assigned.
+
         if (dimOverlay != null)
-        {
             dimOverlay.FadeIn();
+
+        if (mainButtonsGroup != null)
+        {
+            mainButtonsGroup.interactable = false;
+            mainButtonsGroup.blocksRaycasts = false;
         }
-        
         StartCoroutine(SlideRoutine(settingsBar.position, openPosition, slideDuration));
         isOpen = true;
     }
@@ -65,13 +83,15 @@ public class SettingsBar3DController : MonoBehaviour
     {
         if (isSliding)
             return;
-        
-        // Fade out the dim overlay if it's assigned.
+
         if (dimOverlay != null)
-        {
             dimOverlay.FadeOut();
+
+        if (mainButtonsGroup != null)
+        {
+            mainButtonsGroup.interactable = true;
+            mainButtonsGroup.blocksRaycasts = true;
         }
-        
         StartCoroutine(SlideRoutine(settingsBar.position, closedPosition, slideDuration));
         isOpen = false;
     }
@@ -93,25 +113,32 @@ public class SettingsBar3DController : MonoBehaviour
 
     void Update()
     {
-        // When the bar is open, detect clicks that are not within the settings bar.
+        // Only check for outside clicks if the settings bar is open.
         if (isOpen && Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            bool clickedOnBar = false;
+            bool clickedInside = false;
 
-            // Fire a raycast and check if the hit belongs to the settings bar or any of its children.
             if (Physics.Raycast(ray, out hit))
             {
-                // If the hit collider's transform is either the settingsBar itself or is a child of it, consider it a click on the bar.
-                if (hit.collider.transform == settingsBar || hit.collider.transform.IsChildOf(settingsBar))
+                // Check if the hit collider belongs to settingsAreaRoot (or its children).
+                if (hit.collider != null)
                 {
-                    clickedOnBar = true;
+                    if (hit.collider.transform == settingsAreaRoot || hit.collider.transform.IsChildOf(settingsAreaRoot))
+                    {
+                        clickedInside = true;
+                    }
+                    // Also, if the hit collider belongs to ignoreClickArea (or its children), consider it inside.
+                    else if (ignoreClickArea != null && (hit.collider.transform == ignoreClickArea || hit.collider.transform.IsChildOf(ignoreClickArea)))
+                    {
+                        clickedInside = true;
+                    }
                 }
             }
 
-            // Only slide out if the click did NOT hit the settings bar or any of its children.
-            if (!clickedOnBar)
+            // If the click did NOT hit any object in the settings area or ignore area, close the bar.
+            if (!clickedInside)
             {
                 SlideOut();
             }
