@@ -93,27 +93,24 @@ public class SettingsBar3DController : MonoBehaviour
 
     void Update()
     {
-        // When the bar is open, detect clicks that are not on the bar.
+        // When the bar is open, detect clicks that are not within the settings bar.
         if (isOpen && Input.GetMouseButtonDown(0))
         {
-            // Use a raycast from the camera through the mouse position.
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             bool clickedOnBar = false;
 
-            Collider barCollider = settingsBar.GetComponent<Collider>();
-            if (barCollider != null)
+            // Fire a raycast and check if the hit belongs to the settings bar or any of its children.
+            if (Physics.Raycast(ray, out hit))
             {
-                if (Physics.Raycast(ray, out hit))
+                // If the hit collider's transform is either the settingsBar itself or is a child of it, consider it a click on the bar.
+                if (hit.collider.transform == settingsBar || hit.collider.transform.IsChildOf(settingsBar))
                 {
-                    if (hit.collider == barCollider)
-                    {
-                        clickedOnBar = true;
-                    }
+                    clickedOnBar = true;
                 }
             }
 
-            // If the click did not hit the settings bar, slide it out.
+            // Only slide out if the click did NOT hit the settings bar or any of its children.
             if (!clickedOnBar)
             {
                 SlideOut();
