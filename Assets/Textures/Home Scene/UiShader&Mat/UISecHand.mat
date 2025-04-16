@@ -29,8 +29,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AntiAlias: 0.0164
-    - _CornerRadius: 0.221
+    - _AntiAlias: 0.005
+    - _CornerRadius: 0.05
     m_Colors:
-    - _Color: {r: 1, g: 0.6084906, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.60784316, b: 1, a: 1}
   m_BuildTextureStacks: []
