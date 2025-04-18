@@ -1,0 +1,8 @@
+{
+  "songName": "My notc ool Song",
+  "artist": "Cool Artist",
+  "beatmaps": [
+    { "displayName": "Easy", "level": 1, "color": { "r":0.2, "g":0.8, "b":0.2, "a":1 } },
+    { "displayName": "Hard", "level": 5, "color": { "r":0.8, "g":0.2, "b":0.2, "a":1 } }
+  ]
+}
