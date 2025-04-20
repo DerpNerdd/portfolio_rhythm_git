@@ -1,8 +1,9 @@
 // Assets/Scripts/Play Menu Scene/SongListManager.cs
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class SongListManager : MonoBehaviour
 {
@@ -10,105 +11,128 @@ public class SongListManager : MonoBehaviour
     [Tooltip("Drag in the Content RectTransform under ScrollView/Viewport")]
     public RectTransform contentParent;
 
-    [Tooltip("Drag in your SongItem prefab")]
+    [Tooltip("Drag in your SongItem prefab here")]
     public GameObject songItemPrefab;
 
-    [Header("Raycasting (optional)")]
-    [Tooltip("Drag your Canvas's GraphicRaycaster here, or leave blank to auto‑find.")]
-    public GraphicRaycaster raycaster;
+    [Tooltip("Drag your Scroll View's ScrollRect component here")]
+    public ScrollRect scrollRect;
 
-    [Tooltip("Drag your EventSystem here, or leave blank to auto‑find.")]
-    public EventSystem eventSystem;
+    [Header("Raycasting (optional)")]
+    public GraphicRaycaster raycaster;
+    public EventSystem     eventSystem;
 
     private readonly List<SongItemController> controllers = new();
-    private readonly List<SongData> allSongs     = new();
+    private readonly List<SongData>           allSongs    = new();
 
     void Awake()
     {
-        // Auto‑find raycaster if not assigned
         if (raycaster == null)
         {
             var canvas = GetComponentInParent<Canvas>();
-            raycaster = canvas ? canvas.GetComponent<GraphicRaycaster>() : FindObjectOfType<GraphicRaycaster>();
+            raycaster = canvas
+                ? canvas.GetComponent<GraphicRaycaster>()
+                : FindObjectOfType<GraphicRaycaster>();
         }
-
-        // Auto‑find event system
         if (eventSystem == null)
             eventSystem = EventSystem.current ?? FindObjectOfType<EventSystem>();
-
-        if (raycaster == null)
-            Debug.LogError("[SongListManager] No GraphicRaycaster found.");
-        if (eventSystem == null)
-            Debug.LogError("[SongListManager] No EventSystem found.");
     }
 
     void Start()
     {
-        LoadSongs();
-        PopulateList();
+        LoadSongsFromFolders();
+        PopulateList(allSongs);
+    }
+
+    void LoadSongsFromFolders()
+    {
+        var indexText = Resources.Load<TextAsset>("Songs/songIndex");
+        if (indexText == null) return;
+        var index = JsonUtility.FromJson<SongIndex>(indexText.text);
+
+        foreach (var id in index.songIDs)
+        {
+            var dataText = Resources.Load<TextAsset>($"Songs/{id}/SongData");
+            if (dataText == null) continue;
+
+            var song = JsonUtility.FromJson<SongData>(dataText.text);
+            if (song == null || string.IsNullOrEmpty(song.songName)) continue;
+
+            song.coverArt  = Resources.Load<Sprite>($"Songs/{id}/cover");
+            song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/audio");
+
+            allSongs.Add(song);
+        }
+    }
+
+    /// <summary>
+    /// Rebuilds the UI list from the provided songs, then snaps scrolling to top.
+    /// </summary>
+    private void PopulateList(IEnumerable<SongData> songs)
+    {
+        // --- Clear out existing items
+        foreach (var c in controllers)
+            Destroy(c.gameObject);
+        controllers.Clear();
+
+        // --- Instantiate new items
+        foreach (var s in songs)
+        {
+            var go   = Instantiate(songItemPrefab, contentParent);
+            var ctrl = go.GetComponent<SongItemController>();
+            ctrl.manager = this;
+            controllers.Add(ctrl);
+            ctrl.Initialize(s);
+        }
+
+        // --- FORCE layout rebuild so content size is correct
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent);
+
+        // --- Reset scroll to top (normalized + anchoredPosition)
+        if (scrollRect != null)
+        {
+            scrollRect.verticalNormalizedPosition = 1f;
+            // Also zero‐out content offset (in case pivot isn’t 1)
+            Vector2 ap = scrollRect.content.anchoredPosition;
+            scrollRect.content.anchoredPosition = new Vector2(ap.x, 0f);
+        }
+    }
+
+    public void FilterSongs(string query)
+    {
+        var q = (query ?? "").Trim().ToLowerInvariant();
+        if (string.IsNullOrEmpty(q))
+        {
+            PopulateList(allSongs);
+            return;
+        }
+        var filtered = allSongs.Where(s =>
+            s.songName.ToLowerInvariant().Contains(q) ||
+            s.artist.ToLowerInvariant().Contains(q));
+        PopulateList(filtered);
     }
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
-            CheckClickOutside();
+            CollapseIfClickedOutside();
     }
 
-    private void CheckClickOutside()
+    private void CollapseIfClickedOutside()
     {
         if (raycaster == null || eventSystem == null) return;
+        var pd      = new PointerEventData(eventSystem) { position = Input.mousePosition };
+        var results = new List<RaycastResult>();
+        raycaster.Raycast(pd, results);
 
-        var pointerData = new PointerEventData(eventSystem) { position = Input.mousePosition };
-        var results     = new List<RaycastResult>();
-        raycaster.Raycast(pointerData, results);
-
-        // If none of the hits belongs to a SongItemController, collapse all
-        foreach (var res in results)
-            if (res.gameObject.GetComponentInParent<SongItemController>() != null)
-                return;
-
-        CollapseAll();
+        if (!results.Any(r => r.gameObject.GetComponentInParent<SongItemController>() != null))
+            controllers.ForEach(c => c.AnimateCollapse());
     }
 
-    private void LoadSongs()
-    {
-        var songFiles = Resources.LoadAll<TextAsset>("Songs");
-        foreach (var file in songFiles)
-        {
-            var song = JsonUtility.FromJson<SongData>(file.text);
-            if (song != null) allSongs.Add(song);
-            else Debug.LogWarning($"Failed to parse {file.name}");
-        }
-    }
-
-    private void PopulateList()
-    {
-        foreach (var song in allSongs)
-        {
-            var itemGO = Instantiate(songItemPrefab, contentParent);
-            var ctrl   = itemGO.GetComponent<SongItemController>();
-            ctrl.manager = this;
-            controllers.Add(ctrl);
-            ctrl.Initialize(song);
-        }
-    }
-
-    /// <summary>
-    /// Collapse all items with animation when clicking outside.
-    /// </summary>
-    public void CollapseAll()
-    {
-        foreach (var ctrl in controllers)
-            ctrl.AnimateCollapse();
-    }
-
-    /// <summary>
-    /// Called by a SongItemController before it expands to collapse its siblings.
-    /// </summary>
     public void NotifyItemExpanded(SongItemController expanded)
     {
-        foreach (var ctrl in controllers)
-            if (ctrl != expanded)
-                ctrl.Collapse();
+        foreach (var c in controllers)
+            if (c != expanded)
+                c.Collapse();
     }
 }
