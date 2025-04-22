@@ -22,17 +22,17 @@ public class SongListManager : MonoBehaviour
     [Tooltip("Dropdown for group (None, Easy, Medium, Hard, Extreme)")]
     public TMP_Dropdown groupDropdown;
 
+    [Header("Main Info Panel")]
+    [Tooltip("Controller for the right‑hand info display")]
+    public MainInfoController mainInfo;
+
     [Header("Raycasting (optional)")]
     public GraphicRaycaster raycaster;
     public EventSystem     eventSystem;
 
-    // Full dataset
     private readonly List<SongData>           allSongs    = new List<SongData>();
-    // Active controllers for collapse
     private readonly List<SongItemController> controllers = new List<SongItemController>();
-
-    // Holds the current search query (lowercase), empty = no filter
-    private string searchQuery = "";
+    private string                            searchQuery = "";
 
     private readonly string[] groupOptions = { "None", "Easy", "Medium", "Hard", "Extreme" };
 
@@ -45,12 +45,8 @@ public class SongListManager : MonoBehaviour
     void Start()
     {
         LoadSongsFromFolders();
-
-        // wire dropdown callbacks
         sortDropdown.onValueChanged.AddListener(_ => UpdateList());
         groupDropdown.onValueChanged.AddListener(_ => UpdateList());
-
-        // initial build
         UpdateList();
     }
 
@@ -61,7 +57,7 @@ public class SongListManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Public method for the SearchBarController to call.
+    /// Called by SearchBarController to apply text filtering.
     /// </summary>
     public void FilterSongs(string query)
     {
@@ -70,17 +66,16 @@ public class SongListManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Reads each Songs/{folder}/SongData.json + optional assets.
+    /// Populates allSongs from Resources/Songs/{id}/SongData.json
     /// </summary>
     private void LoadSongsFromFolders()
     {
         var indexText = Resources.Load<TextAsset>("Songs/songIndex");
         if (indexText == null)
         {
-            Debug.LogError("[SongListManager] Missing Resources/Songs/songIndex.json");
+            Debug.LogError("[SongListManager] Missing songIndex.json");
             return;
         }
-
         var index = JsonUtility.FromJson<SongIndex>(indexText.text);
         foreach (var id in index.songIDs)
         {
@@ -91,19 +86,18 @@ public class SongListManager : MonoBehaviour
 
             song.coverArt  = Resources.Load<Sprite>($"Songs/{id}/cover");
             song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/audio");
-
             allSongs.Add(song);
         }
     }
 
     /// <summary>
-    /// Applies search, group, and sort, then rebuilds the list.
+    /// Applies search, group, and sort filters then rebuilds the UI.
     /// </summary>
     private void UpdateList()
     {
         IEnumerable<SongData> list = allSongs;
 
-        // 1) Search filter
+        // text search
         if (!string.IsNullOrEmpty(searchQuery))
         {
             list = list.Where(s =>
@@ -112,7 +106,7 @@ public class SongListManager : MonoBehaviour
             );
         }
 
-        // 2) Group filter
+        // group filter
         int gIdx = groupDropdown.value;
         if (gIdx > 0)
         {
@@ -120,7 +114,7 @@ public class SongListManager : MonoBehaviour
             list = list.Where(s => s.beatmaps.Any(b => b.displayName == gf));
         }
 
-        // 3) Sort
+        // sort
         switch (sortDropdown.value)
         {
             case 1: list = list.OrderBy(s => s.songName); break;
@@ -135,12 +129,12 @@ public class SongListManager : MonoBehaviour
 
     private void PopulateList(List<SongData> songs, string groupFilter)
     {
-        // clear existing
+        // clear
         foreach (var c in controllers)
             Destroy(c.gameObject);
         controllers.Clear();
 
-        // instantiate new
+        // instantiate
         foreach (var s in songs)
         {
             var go   = Instantiate(songItemPrefab, contentParent);
@@ -150,7 +144,7 @@ public class SongListManager : MonoBehaviour
             ctrl.Initialize(s, groupFilter);
         }
 
-        // rebuild layout & reset scroll
+        // rebuild & reset scroll
         Canvas.ForceUpdateCanvases();
         LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent);
         if (scrollRect != null)
@@ -182,5 +176,21 @@ public class SongListManager : MonoBehaviour
     {
         foreach (var c in controllers)
             if (c != expanded) c.Collapse();
+    }
+
+    /// <summary>
+    /// Called by SongItemController when a difficulty entry is clicked.
+    /// </summary>
+    public void SelectDifficulty(SongData song, BeatmapInfo bm)
+    {
+        mainInfo?.UpdateMainInfo(song, bm);
+    }
+
+    /// <summary>
+    /// Exposes a centralized layout rebuild call for SongItemController.
+    /// </summary>
+    public void LayoutRebuild(RectTransform rt)
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
     }
 }

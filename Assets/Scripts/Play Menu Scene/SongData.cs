@@ -8,8 +8,8 @@ public class BeatmapInfo {
     public int    level;
     public Color  color;
     public string mapperName;
+    public int    starDifficulty;
 }
-
 [System.Serializable]
 public class SongData {
     public string        songName;

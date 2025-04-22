@@ -416,6 +416,7 @@ MonoBehaviour:
   scrollRect: {fileID: 0}
   sortDropdown: {fileID: 0}
   groupDropdown: {fileID: 0}
+  mainInfo: {fileID: 0}
   raycaster: {fileID: 0}
   eventSystem: {fileID: 0}
 --- !u!4 &33098447
@@ -22281,6 +22282,7 @@ MonoBehaviour:
   scrollRect: {fileID: 1110846897}
   sortDropdown: {fileID: 494884579}
   groupDropdown: {fileID: 1920520145}
+  mainInfo: {fileID: 0}
   raycaster: {fileID: 0}
   eventSystem: {fileID: 0}
 --- !u!1 &1666536727
@@ -22865,6 +22867,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1712366009}
+  - component: {fileID: 1712366010}
   m_Layer: 0
   m_Name: MainSongTitle
   m_TagString: Untagged
@@ -22896,6 +22899,24 @@ RectTransform:
   m_AnchoredPosition: {x: -0.525, y: 2.332}
   m_SizeDelta: {x: 7.7724476, y: 1.2800841}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1712366010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1712366008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 643c37b6dff40014d9fcd16b3de2c468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  songBG: {fileID: 50720985}
+  songTitle: {fileID: 1752949778}
+  songArtist: {fileID: 362965785}
+  diffMiniBG: {fileID: 268255680}
+  diffMiniStars: {fileID: 1459072070}
+  diffLargeBG: {fileID: 1060417082}
 --- !u!1 &1724645917
 GameObject:
   m_ObjectHideFlags: 0
