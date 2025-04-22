@@ -7,13 +7,157 @@
       "displayName": "Easy",
       "level": 1,
       "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1 },
-      "mapperName": "DerpNerd"
+      "mapperName": "DerpNerd",
+      "Source": "UUFO",
+      "Language": "Instrumental",
+      "Tags" : [
+        "Camellia",
+        "UUFO",
+        "Instrumental"
+      ],
+      "Submitted":"22 Nov 2022",
+      "Ranked": "28 Nov 2023",
+      "HP Drain": 4.5,
+      "Accuracy": 4,
+      "StarDifficulty": 1,
+      "SuccessRate": 97.5,
+      "UserRating": {
+        "Red": 3.5,
+        "Green": 96.5
+      },
+      "RatingSpread": {
+        "DarkRedRec": 0,
+        "RedRec": 0,
+        "DarkOrgRec": 0,
+        "OrgRec": 0,
+        "DarkYellowRec": 0.1,
+        "YellowRec": 0.2,
+        "DarkGreenRec": 0.5,
+        "GreenRec": 0.7,
+        "LightGreenRec": 0.75,
+        "LightestGreenRec": 1
+      },
+      "TotalPlayCount": 621982,
+      "DifficultyPlayCount": 2728,
+      "Leaderboard":{
+        "First":{
+          "Username": "User",
+          "Combo": 1000,
+          "Accuracy": 99.95,
+          "Points":{
+            "300": 995,
+            "200": 4,
+            "100": 1,
+            "50": 0,
+            "X": 0
+          },
+          "Score": 997000
+        },
+        "Second":{
+          "Username": "User",
+          "Combo": 999,
+          "Accuracy": 99.90,
+          "Points":{
+            "300": 995,
+            "200": 4,
+            "100": 0,
+            "50": 0,
+            "X": 1
+          },
+          "Score": 996000
+        },
+        "Third":{
+          "Username": "User",
+          "Combo": 998,
+          "Accuracy": 99.85,
+          "Points":{
+            "300": 995,
+            "200": 3,
+            "100": 0,
+            "50": 0,
+            "X": 2
+          },
+          "Score": 995000
+        }
+      }
     },
     {
       "displayName": "Hard",
       "level": 5,
       "color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1 },
-      "mapperName": "BeatWizard"
+      "mapperName": "BeatWizard",
+      "Source": "UUFO",
+      "Language": "Instrumental",
+      "Tags" : [
+        "Camellia",
+        "UUFO",
+        "Instrumental"
+      ],
+      "Submitted":"22 Nov 2022",
+      "Ranked": "28 Nov 2023",
+      "HP Drain": 7.5,
+      "Accuracy": 7,
+      "StarDifficulty": 5,
+      "SuccessRate": 47.5,
+      "UserRating": {
+        "Red": 67.5,
+        "Green": 32.5
+      },
+      "RatingSpread": {
+        "DarkRedRec": 0,
+        "RedRec": 0,
+        "DarkOrgRec": 0,
+        "OrgRec": 0,
+        "DarkYellowRec": 0.1,
+        "YellowRec": 0.2,
+        "DarkGreenRec": 0.5,
+        "GreenRec": 0.7,
+        "LightGreenRec": 0.75,
+        "LightestGreenRec": 1
+      },
+      "TotalPlayCount": 621982,
+      "DifficultyPlayCount": 212728,
+      "Leaderboard":{
+        "First":{
+          "Username": "User",
+          "Combo": 6000,
+          "Accuracy": 99.95,
+          "Points":{
+            "300": 5995,
+            "200": 4,
+            "100": 1,
+            "50": 0,
+            "X": 0
+          },
+          "Score": 997000
+        },
+        "Second":{
+          "Username": "User",
+          "Combo": 5999,
+          "Accuracy": 99.90,
+          "Points":{
+            "300": 5995,
+            "200": 4,
+            "100": 0,
+            "50": 0,
+            "X": 1
+          },
+          "Score": 996000
+        },
+        "Third":{
+          "Username": "User",
+          "Combo": 5998,
+          "Accuracy": 99.85,
+          "Points":{
+            "300": 5995,
+            "200": 3,
+            "100": 0,
+            "50": 0,
+            "X": 2
+          },
+          "Score": 995000
+        }
+      }
     }
   ]
 }

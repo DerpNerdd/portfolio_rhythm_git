@@ -1,31 +1,35 @@
 // Assets/Scripts/Play Menu Scene/SongItemController.cs
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;      // for Image, LayoutRebuilder, LayoutUtility
+using UnityEngine.UI;
 using TMPro;
 
 [RequireComponent(typeof(RectTransform))]
 public class SongItemController : MonoBehaviour
 {
+    [Header("Icon Settings")]
+    [Tooltip("Spacing between icon circles (from HorizontalLayoutGroup)")]
+    public float iconSpacing = 8f;
+
     [Header("Styling")]
-    [Tooltip("Background Image on the MainUI bar")]
     public Image mainUIBackground;
-    [Tooltip("Semi‑transparent cover art behind text/icons")]
     public Image songBG;
 
     [Header("Main UI")]
-    public Button mainButton;
-    public TMP_Text songNameText;
-    public TMP_Text artistText;
-    public Transform iconContainer;
-    public GameObject iconPrefab;
+    public Button       mainButton;
+    public TMP_Text     songNameText;
+    public TMP_Text     artistText;
+    public RectTransform iconContainer;
+    public GameObject   iconPrefab;
 
     [Header("Expansion UI")]
-    public Transform difficultyContainer;
-    public GameObject difficultyEntryPrefab;
+    public Transform    difficultyContainer;
+    public GameObject   difficultyEntryPrefab;
 
-    [HideInInspector] public SongListManager manager;
+    [HideInInspector]
+    public SongListManager manager;
 
     private bool isExpanded = false;
     private LayoutElement diffLayout;
@@ -34,110 +38,72 @@ public class SongItemController : MonoBehaviour
 
     void Awake()
     {
-        // Prepare for animated height
         diffRect = difficultyContainer as RectTransform;
         diffLayout = difficultyContainer.GetComponent<LayoutElement>()
                    ?? difficultyContainer.gameObject.AddComponent<LayoutElement>();
 
         difficultyContainer.gameObject.SetActive(false);
-        diffLayout.minHeight       = 0;
-        diffLayout.preferredHeight = 0;
-        diffLayout.flexibleHeight  = 0;
+        diffLayout.minHeight = diffLayout.preferredHeight = diffLayout.flexibleHeight = 0;
+
+        var hlg = iconContainer.GetComponent<HorizontalLayoutGroup>();
+        if (hlg != null) hlg.spacing = iconSpacing;
     }
 
     /// <summary>
-    /// Call this to set up coloring, texts, and callbacks.
+    /// Initialize; if groupFilter != null, only show that difficulty.
     /// </summary>
-    public void Initialize(SongData data)
+    public void Initialize(SongData data, string groupFilter = null)
     {
-        // 1) Tint MainUI bar
         if (mainUIBackground != null)
-        {
-            Debug.Log($"[SongItem] Applying mainColor {data.mainColor} to {mainUIBackground.gameObject.name}");
             mainUIBackground.color = data.mainColor;
-        }
 
-        // 2) Cover art
         if (songBG != null && data.coverArt != null)
         {
             songBG.sprite = data.coverArt;
-            var c = songBG.color;
-            c.a = 0.5f;
-            songBG.color = c;
+            var c = songBG.color; c.a = 0.5f; songBG.color = c;
         }
 
-        // 3) Labels
         songNameText.text = data.songName;
         artistText.text   = data.artist;
 
-        // 4) Difficulty‑icon circles
-        foreach (var bm in data.beatmaps)
+        IEnumerable<BeatmapInfo> toShow = data.beatmaps;
+        if (!string.IsNullOrEmpty(groupFilter))
+            toShow = toShow.Where(b => b.displayName == groupFilter);
+
+        foreach (var bm in toShow)
         {
             var iconGO = Instantiate(iconPrefab, iconContainer);
             if (iconGO.TryGetComponent<Image>(out var img))
-            {
-                Debug.Log($"[SongItem] Applying beatmap color {bm.color} to icon");
                 img.color = bm.color;
-            }
         }
 
-        // 5) Difficulty entries
-        foreach (var bm in data.beatmaps)
+        foreach (var bm in toShow)
         {
             var entryGO = Instantiate(difficultyEntryPrefab, difficultyContainer);
+            var bg = entryGO.GetComponent<Image>();
+            if (bg != null) bg.color = bm.color;
 
-            // 5a) Tint the entry background
-            var entryBg = entryGO.GetComponent<Image>();
-            if (entryBg != null)
-            {
-                Debug.Log($"[SongItem] Applying beatmap color {bm.color} to {entryGO.name}");
-                entryBg.color = bm.color;
-            }
-            else
-            {
-                // fallback: child named "Image"
-                var fallback = entryGO.transform.Find("Image")?
-                                     .GetComponent<Image>();
-                if (fallback != null)
-                {
-                    Debug.Log($"[SongItem] Applying beatmap color {bm.color} to child Image");
-                    fallback.color = bm.color;
-                }
-            }
+            entryGO.transform.Find("SongName").GetComponent<TMP_Text>().text   = bm.displayName;
+            entryGO.transform.Find("mappedText").GetComponent<TMP_Text>().text = "mapped by";
+            entryGO.transform.Find("MapperName").GetComponent<TMP_Text>().text = bm.mapperName;
+            entryGO.transform.Find("Difficulty").GetComponent<TMP_Text>().text = bm.level.ToString();
 
-            // 5b) Text fields
-            entryGO.transform.Find("SongName")
-                   .GetComponent<TMP_Text>().text = bm.displayName;
-
-            entryGO.transform.Find("mappedText")
-                   .GetComponent<TMP_Text>().text = "mapped by";
-
-            entryGO.transform.Find("MapperName")
-                   .GetComponent<TMP_Text>().text = bm.mapperName;
-
-            entryGO.transform.Find("Difficulty")
-                   .GetComponent<TMP_Text>().text = bm.level.ToString();
-
-            // 5c) Play callback
-            entryGO.GetComponent<Button>()
-                   .onClick.AddListener(() => PlayDifficulty(data, bm));
+            entryGO.GetComponent<Button>().onClick.AddListener(() =>
+                Debug.Log($"▶️ Playing {data.songName} [{bm.displayName}]"));
         }
 
-        // 6) Expand/collapse
         mainButton.onClick.AddListener(ToggleExpand);
     }
 
     private void ToggleExpand()
     {
-        bool willExpand = !isExpanded;
-        if (willExpand && manager != null)
-            manager.NotifyItemExpanded(this);
+        bool expand = !isExpanded;
+        if (expand && manager != null) manager.NotifyItemExpanded(this);
 
         if (toggleCoroutine != null)
             StopCoroutine(toggleCoroutine);
-
-        toggleCoroutine = StartCoroutine(AnimateToggle(willExpand));
-        isExpanded = willExpand;
+        toggleCoroutine = StartCoroutine(AnimateToggle(expand));
+        isExpanded = expand;
     }
 
     private IEnumerator AnimateToggle(bool expand)
@@ -145,23 +111,20 @@ public class SongItemController : MonoBehaviour
         if (!difficultyContainer.gameObject.activeSelf)
             difficultyContainer.gameObject.SetActive(true);
 
-        // Measure natural height
         diffLayout.enabled = false;
         LayoutRebuilder.ForceRebuildLayoutImmediate(diffRect);
-        float fullHeight = LayoutUtility.GetPreferredHeight(diffRect);
+        float full = LayoutUtility.GetPreferredHeight(diffRect);
         diffLayout.enabled = true;
 
-        // Animate
-        float duration = 0.2f, elapsed = 0f;
-        float startH = expand ? 0f : fullHeight;
-        float endH   = expand ? fullHeight : 0f;
-        diffLayout.preferredHeight = startH;
+        float elapsed = 0f, duration = 0.2f;
+        float start  = expand ? 0f : full;
+        float end    = expand ? full : 0f;
+        diffLayout.preferredHeight = start;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            diffLayout.preferredHeight = Mathf.Lerp(startH, endH, t);
+            diffLayout.preferredHeight = Mathf.Lerp(start, end, elapsed / duration);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
             if (manager != null)
@@ -170,12 +133,7 @@ public class SongItemController : MonoBehaviour
             yield return null;
         }
 
-        // Snap and cleanup
-        diffLayout.preferredHeight = endH;
-        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
-        if (manager != null)
-            LayoutRebuilder.ForceRebuildLayoutImmediate(manager.contentParent);
-
+        diffLayout.preferredHeight = end;
         if (!expand)
             difficultyContainer.gameObject.SetActive(false);
 
@@ -185,8 +143,7 @@ public class SongItemController : MonoBehaviour
     public void Collapse()
     {
         if (!isExpanded) return;
-        if (toggleCoroutine != null)
-            StopCoroutine(toggleCoroutine);
+        if (toggleCoroutine != null) StopCoroutine(toggleCoroutine);
 
         isExpanded = false;
         diffLayout.preferredHeight = 0;
@@ -197,15 +154,5 @@ public class SongItemController : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(manager.contentParent);
     }
 
-    public void AnimateCollapse()
-    {
-        if (isExpanded)
-            ToggleExpand();
-    }
-
-    private void PlayDifficulty(SongData song, BeatmapInfo bm)
-    {
-        Debug.Log($"▶️ Playing {song.songName} [{bm.displayName}]");
-        // TODO: load the play scene
-    }
+    public void AnimateCollapse() => ToggleExpand();
 }

@@ -414,6 +414,8 @@ MonoBehaviour:
   contentParent: {fileID: 1042399346}
   songItemPrefab: {fileID: 6103167753073142450, guid: 8f869b99fecea3b4c9308435f762fbde, type: 3}
   scrollRect: {fileID: 0}
+  sortDropdown: {fileID: 0}
+  groupDropdown: {fileID: 0}
   raycaster: {fileID: 0}
   eventSystem: {fileID: 0}
 --- !u!4 &33098447
@@ -3539,7 +3541,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Easy
+  m_text: None
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
   m_sharedMaterial: {fileID: -8521476441499342144, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
@@ -7895,6 +7897,8 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: None
+      m_Image: {fileID: 0}
     - m_Text: Title
       m_Image: {fileID: 0}
     - m_Text: Artist
@@ -22274,7 +22278,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   contentParent: {fileID: 1042399346}
   songItemPrefab: {fileID: 6103167753073142450, guid: 8f869b99fecea3b4c9308435f762fbde, type: 3}
-  scrollRect: {fileID: 0}
+  scrollRect: {fileID: 1110846897}
+  sortDropdown: {fileID: 494884579}
+  groupDropdown: {fileID: 1920520145}
   raycaster: {fileID: 0}
   eventSystem: {fileID: 0}
 --- !u!1 &1666536727
@@ -24941,6 +24947,8 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: None
+      m_Image: {fileID: 0}
     - m_Text: Easy
       m_Image: {fileID: 0}
     - m_Text: Medium
@@ -26990,7 +26998,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Title
+  m_text: None
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
   m_sharedMaterial: {fileID: -8521476441499342144, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
