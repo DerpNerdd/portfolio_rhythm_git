@@ -22282,7 +22282,7 @@ MonoBehaviour:
   scrollRect: {fileID: 1110846897}
   sortDropdown: {fileID: 494884579}
   groupDropdown: {fileID: 1920520145}
-  mainInfo: {fileID: 0}
+  mainInfo: {fileID: 1712366010}
   raycaster: {fileID: 0}
   eventSystem: {fileID: 0}
 --- !u!1 &1666536727
