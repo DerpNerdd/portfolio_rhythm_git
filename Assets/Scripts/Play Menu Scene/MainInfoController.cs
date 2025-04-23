@@ -5,37 +5,48 @@ using TMPro;
 
 public class MainInfoController : MonoBehaviour
 {
+    [Header("Background")]
+    [Tooltip("Full-screen background image updated per song")]
+    public Image backgroundImage;
+
     [Header("Main Song Display")]
-    public Image    songBG;           // SongBG Image
-    public TMP_Text songTitle;        // SongTitle text
-    public TMP_Text songArtist;       // SongArtist text
+    public Image    songBG;
+    public TMP_Text songTitle;
+    public TMP_Text songArtist;
 
     [Header("Difficulty Mini")]
-    public Image    diffMiniBG;       // SongDiffMini image
-    public TMP_Text diffMiniStars;    // SongDiffMini/Text
-    // public Image starIcon;         // optional, your star image
+    public Image    diffMiniBG;
+    public TMP_Text diffMiniStars;
 
     [Header("Difficulty Large")]
-    public Image    diffLargeBG;      // SongDiffLarge image
+    public Image    diffLargeBG;
 
     /// <summary>
-    /// Call this whenever a new difficulty is selected.
+    /// Updates all UI elements when a song or difficulty is selected.
     /// </summary>
     public void UpdateMainInfo(SongData song, BeatmapInfo bm)
     {
-        // 1. big cover
-        if (song.coverArt != null)
-            songBG.sprite = song.coverArt;
+        // background: swap or clear
+        if (backgroundImage != null)
+            backgroundImage.sprite = song.mainCover != null
+                ? song.mainCover
+                : null;
 
-        // 2. texts
+        // thumbnail
+        if (songBG != null)
+            songBG.sprite = song.coverArt != null
+                ? song.coverArt
+                : null;
+
+        // text
         songTitle.text  = song.songName;
         songArtist.text = song.artist;
 
-        // 3. difficulty tint
+        // tint
         diffMiniBG.color  = bm.color;
         diffLargeBG.color = bm.color;
 
-        // 4. star count
-        diffMiniStars.text = bm.starDifficulty.ToString();
+        // star difficulty
+        diffMiniStars.text = bm.StarDifficulty.ToString("F2");
     }
 }

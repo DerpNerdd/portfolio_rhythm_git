@@ -8,16 +8,19 @@ public class BeatmapInfo {
     public int    level;
     public Color  color;
     public string mapperName;
-    public int    starDifficulty;
+    public int    StarDifficulty;
+    public float  bpm;            // ← matches your JSON `"bpm": 115`
 }
+
 [System.Serializable]
 public class SongData {
-    public string        songName;
-    public string        artist;
-    public Color         mainColor;   // <-- new
+    public string           songName;
+    public string           artist;
+    public Color            mainColor;
     public List<BeatmapInfo> beatmaps;
 
-    // populated at load-time
-    [System.NonSerialized] public Sprite     coverArt;
-    [System.NonSerialized] public AudioClip  audioClip;
+    // loaded at runtime
+    [System.NonSerialized] public Sprite    coverArt;
+    [System.NonSerialized] public AudioClip audioClip;
+    [System.NonSerialized] public Sprite    mainCover;
 }

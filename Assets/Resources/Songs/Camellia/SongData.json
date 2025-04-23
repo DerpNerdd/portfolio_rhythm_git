@@ -9,6 +9,7 @@
       "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1 },
       "mapperName": "DerpNerd",
       "Source": "UUFO",
+      "bpm": 115,
       "Language": "Instrumental",
       "Tags" : [
         "Camellia",
@@ -19,7 +20,7 @@
       "Ranked": "28 Nov 2023",
       "HP Drain": 4.5,
       "Accuracy": 4,
-      "StarDifficulty": 1,
+      "StarDifficulty": 1.00,
       "SuccessRate": 97.5,
       "UserRating": {
         "Red": 3.5,
@@ -87,6 +88,7 @@
       "color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1 },
       "mapperName": "BeatWizard",
       "Source": "UUFO",
+      "bpm": 115,
       "Language": "Instrumental",
       "Tags" : [
         "Camellia",
@@ -97,7 +99,7 @@
       "Ranked": "28 Nov 2023",
       "HP Drain": 7.5,
       "Accuracy": 7,
-      "StarDifficulty": 5,
+      "StarDifficulty": 5.00,
       "SuccessRate": 47.5,
       "UserRating": {
         "Red": 67.5,

@@ -22,24 +22,37 @@ public class SongListManager : MonoBehaviour
     [Tooltip("Dropdown for group (None, Easy, Medium, Hard, Extreme)")]
     public TMP_Dropdown groupDropdown;
 
-    [Header("Main Info Panel")]
-    [Tooltip("Controller for the right‑hand info display")]
+    [Header("Right-Side Panels")]
+    [Tooltip("Controller for the main song info display")]
     public MainInfoController mainInfo;
+    [Tooltip("Controller for the song statistics section")]
+    public SongStatsController statsController;
 
-    [Header("Raycasting (optional)")]
-    public GraphicRaycaster raycaster;
-    public EventSystem     eventSystem;
+    [Header("Audio Preview")]
+    [Tooltip("AudioSource for background preview music")]
+    public AudioSource previewAudioSource;
 
-    private readonly List<SongData>           allSongs    = new List<SongData>();
+    [Header("Optional Raycast Setup")]
+    public EventSystem eventSystem;
+
+    private readonly List<SongData> allSongs    = new List<SongData>();
     private readonly List<SongItemController> controllers = new List<SongItemController>();
-    private string                            searchQuery = "";
-
-    private readonly string[] groupOptions = { "None", "Easy", "Medium", "Hard", "Extreme" };
+    private string searchQuery = "";
+    private SongData currentSong;
+    private BeatmapInfo currentBeatmap;
+    private readonly string[] groupOptions = { "None","Easy","Medium","Hard","Extreme" };
 
     void Awake()
     {
-        if (raycaster    == null) raycaster    = FindObjectOfType<GraphicRaycaster>();
-        if (eventSystem == null) eventSystem = EventSystem.current ?? FindObjectOfType<EventSystem>();
+        if (eventSystem == null)
+            eventSystem = EventSystem.current ?? FindObjectOfType<EventSystem>();
+
+        if (previewAudioSource != null)
+        {
+            previewAudioSource.loop = true;
+            previewAudioSource.playOnAwake = false;
+            previewAudioSource.volume = 0.2f;
+        }
     }
 
     void Start()
@@ -48,6 +61,10 @@ public class SongListManager : MonoBehaviour
         sortDropdown.onValueChanged.AddListener(_ => UpdateList());
         groupDropdown.onValueChanged.AddListener(_ => UpdateList());
         UpdateList();
+
+        // Auto-select and expand the first song
+        if (controllers.Count > 0)
+            controllers[0].mainButton.onClick.Invoke();
     }
 
     void OnDestroy()
@@ -56,27 +73,22 @@ public class SongListManager : MonoBehaviour
         groupDropdown.onValueChanged.RemoveAllListeners();
     }
 
-    /// <summary>
-    /// Called by SearchBarController to apply text filtering.
-    /// </summary>
     public void FilterSongs(string query)
     {
-        searchQuery = (query ?? "").Trim().ToLowerInvariant();
+        searchQuery = query?.Trim().ToLowerInvariant() ?? "";
         UpdateList();
     }
 
-    /// <summary>
-    /// Populates allSongs from Resources/Songs/{id}/SongData.json
-    /// </summary>
     private void LoadSongsFromFolders()
     {
-        var indexText = Resources.Load<TextAsset>("Songs/songIndex");
-        if (indexText == null)
+        var idx = Resources.Load<TextAsset>("Songs/songIndex");
+        if (idx == null)
         {
-            Debug.LogError("[SongListManager] Missing songIndex.json");
+            Debug.LogError("Missing Songs/songIndex.json");
             return;
         }
-        var index = JsonUtility.FromJson<SongIndex>(indexText.text);
+
+        var index = JsonUtility.FromJson<SongIndex>(idx.text);
         foreach (var id in index.songIDs)
         {
             var ta = Resources.Load<TextAsset>($"Songs/{id}/SongData");
@@ -85,36 +97,30 @@ public class SongListManager : MonoBehaviour
             if (song == null || string.IsNullOrEmpty(song.songName)) continue;
 
             song.coverArt  = Resources.Load<Sprite>($"Songs/{id}/cover");
-            song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/audio");
+            song.mainCover = Resources.Load<Sprite>($"Songs/{id}/mainCover");
+            song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/song");
+
             allSongs.Add(song);
         }
     }
 
-    /// <summary>
-    /// Applies search, group, and sort filters then rebuilds the UI.
-    /// </summary>
     private void UpdateList()
     {
         IEnumerable<SongData> list = allSongs;
 
-        // text search
         if (!string.IsNullOrEmpty(searchQuery))
-        {
             list = list.Where(s =>
                 s.songName.ToLowerInvariant().Contains(searchQuery) ||
                 s.artist.ToLowerInvariant().Contains(searchQuery)
             );
-        }
 
-        // group filter
-        int gIdx = groupDropdown.value;
-        if (gIdx > 0)
+        int g = groupDropdown.value;
+        if (g > 0)
         {
-            string gf = groupOptions[gIdx];
+            var gf = groupOptions[g];
             list = list.Where(s => s.beatmaps.Any(b => b.displayName == gf));
         }
 
-        // sort
         switch (sortDropdown.value)
         {
             case 1: list = list.OrderBy(s => s.songName); break;
@@ -124,27 +130,24 @@ public class SongListManager : MonoBehaviour
                         ); break;
         }
 
-        PopulateList(list.ToList(), gIdx > 0 ? groupOptions[gIdx] : null);
+        PopulateList(list.ToList(), g > 0 ? groupOptions[g] : null);
     }
 
     private void PopulateList(List<SongData> songs, string groupFilter)
     {
-        // clear
         foreach (var c in controllers)
             Destroy(c.gameObject);
         controllers.Clear();
 
-        // instantiate
         foreach (var s in songs)
         {
-            var go   = Instantiate(songItemPrefab, contentParent);
-            var ctrl = go.GetComponent<SongItemController>();
-            ctrl.manager = this;
-            controllers.Add(ctrl);
-            ctrl.Initialize(s, groupFilter);
+            var go  = Instantiate(songItemPrefab, contentParent);
+            var ctl = go.GetComponent<SongItemController>();
+            ctl.manager = this;
+            controllers.Add(ctl);
+            ctl.Initialize(s, groupFilter);
         }
 
-        // rebuild & reset scroll
         Canvas.ForceUpdateCanvases();
         LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent);
         if (scrollRect != null)
@@ -163,13 +166,18 @@ public class SongListManager : MonoBehaviour
 
     private void CheckClickOutside()
     {
-        if (raycaster == null || eventSystem == null) return;
+        if (eventSystem == null) return;
+
         var pd   = new PointerEventData(eventSystem) { position = Input.mousePosition };
         var hits = new List<RaycastResult>();
-        raycaster.Raycast(pd, hits);
+        eventSystem.RaycastAll(pd, hits);
 
-        if (!hits.Any(h => h.gameObject.GetComponentInParent<SongItemController>() != null))
-            controllers.ForEach(c => c.AnimateCollapse());
+        // collapse any open items but do NOT change the selected song
+        if (!hits.Any(r => r.gameObject.GetComponentInParent<SongItemController>() != null))
+        {
+            foreach (var c in controllers)
+                c.Collapse();
+        }
     }
 
     public void NotifyItemExpanded(SongItemController expanded)
@@ -178,17 +186,26 @@ public class SongListManager : MonoBehaviour
             if (c != expanded) c.Collapse();
     }
 
-    /// <summary>
-    /// Called by SongItemController when a difficulty entry is clicked.
-    /// </summary>
     public void SelectDifficulty(SongData song, BeatmapInfo bm)
     {
+        currentSong = song;
+        currentBeatmap = bm;
+
         mainInfo?.UpdateMainInfo(song, bm);
+        statsController?.UpdateStats(song, bm);
+
+        if (previewAudioSource != null)
+        {
+            previewAudioSource.Stop();
+            if (song.audioClip != null)
+            {
+                previewAudioSource.clip = song.audioClip;
+                previewAudioSource.time = song.audioClip.length * 0.5f;
+                previewAudioSource.Play();
+            }
+        }
     }
 
-    /// <summary>
-    /// Exposes a centralized layout rebuild call for SongItemController.
-    /// </summary>
     public void LayoutRebuild(RectTransform rt)
     {
         LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
