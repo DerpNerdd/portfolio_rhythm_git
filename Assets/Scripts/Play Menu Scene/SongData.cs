@@ -8,8 +8,16 @@ public class BeatmapInfo {
     public int    level;
     public Color  color;
     public string mapperName;
-    public int    StarDifficulty;
-    public float  bpm;            // ← matches your JSON `"bpm": 115`
+    public float    StarDifficulty;
+    public float  bpm;     
+    public string Source;
+    public string Genre;
+    public string Language;
+    public List<string> Tags;
+    public string Submitted;
+    public string Ranked;      
+    public float  HPDrain;    
+    public float  Accuracy;    
 }
 
 [System.Serializable]

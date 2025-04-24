@@ -28,6 +28,13 @@ public class SongListManager : MonoBehaviour
     [Tooltip("Controller for the song statistics section")]
     public SongStatsController statsController;
 
+    [Header("Specific Diff Stats")]
+    [Tooltip("Controller for Section 1 (mapper/source/genre/etc.)")]
+    public DiffSection1Controller section1Controller;
+
+    [Tooltip("Controller for HP/Acc/Star bars")]
+    public DiffSection2Controller section2Controller;
+
     [Header("Audio Preview")]
     [Tooltip("AudioSource for background preview music")]
     public AudioSource previewAudioSource;
@@ -186,25 +193,40 @@ public class SongListManager : MonoBehaviour
             if (c != expanded) c.Collapse();
     }
 
-    public void SelectDifficulty(SongData song, BeatmapInfo bm)
+public void SelectDifficulty(SongData song, BeatmapInfo bm)
+{
+    // store selection
+    currentSong      = song;
+    currentBeatmap   = bm;
+
+    // update UI panels
+    mainInfo?.UpdateMainInfo(song, bm);
+    statsController?.UpdateStats(song, bm);
+    section1Controller?.UpdateSection(bm);
+    section2Controller?.UpdateSection2(bm);
+
+
+    if (previewAudioSource == null)
+        return;
+
+    if (song.audioClip != null)
     {
-        currentSong = song;
-        currentBeatmap = bm;
-
-        mainInfo?.UpdateMainInfo(song, bm);
-        statsController?.UpdateStats(song, bm);
-
-        if (previewAudioSource != null)
+        // if it's a new clip OR we aren't currently playing, restart it
+        if (previewAudioSource.clip != song.audioClip || !previewAudioSource.isPlaying)
         {
-            previewAudioSource.Stop();
-            if (song.audioClip != null)
-            {
-                previewAudioSource.clip = song.audioClip;
-                previewAudioSource.time = song.audioClip.length * 0.5f;
-                previewAudioSource.Play();
-            }
+            previewAudioSource.clip = song.audioClip;
+            previewAudioSource.time = song.audioClip.length * 0.5f;
+            previewAudioSource.Play();
         }
     }
+    else
+    {
+        // no audio: stop and clear the clip so later selections will trigger a restart
+        previewAudioSource.Stop();
+        previewAudioSource.clip = null;
+    }
+}
+
 
     public void LayoutRebuild(RectTransform rt)
     {

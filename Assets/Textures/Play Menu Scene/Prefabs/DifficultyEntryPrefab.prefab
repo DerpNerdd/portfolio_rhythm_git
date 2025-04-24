@@ -415,7 +415,6 @@ GameObject:
   - component: {fileID: 2440107530844160542}
   - component: {fileID: 3273134167662294159}
   - component: {fileID: 8730402738682868433}
-  - component: {fileID: 4720050607035723943}
   m_Layer: 0
   m_Name: DifficultyEntryPrefab
   m_TagString: Untagged
@@ -544,26 +543,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: {x: 1.05, y: 1.05, z: 1}
   duration: 0.1
---- !u!114 &4720050607035723943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3404446919408073916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: 1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!1 &4767209261372684779
 GameObject:
   m_ObjectHideFlags: 0
