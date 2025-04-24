@@ -35,6 +35,9 @@ public class SongListManager : MonoBehaviour
     [Tooltip("Controller for HP/Acc/Star bars")]
     public DiffSection2Controller section2Controller;
 
+    [Tooltip("Controller for Success Rate/User Rating bars")]
+    public DiffSection3Controller section3Controller;
+
     [Header("Audio Preview")]
     [Tooltip("AudioSource for background preview music")]
     public AudioSource previewAudioSource;
@@ -204,6 +207,8 @@ public void SelectDifficulty(SongData song, BeatmapInfo bm)
     statsController?.UpdateStats(song, bm);
     section1Controller?.UpdateSection(bm);
     section2Controller?.UpdateSection2(bm);
+    section3Controller?.UpdateSection3(currentBeatmap);
+
 
 
     if (previewAudioSource == null)

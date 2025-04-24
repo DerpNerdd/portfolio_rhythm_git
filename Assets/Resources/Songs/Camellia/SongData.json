@@ -108,16 +108,16 @@
         "Green": 32.5
       },
       "RatingSpread": {
-        "DarkRedRec": 0,
-        "RedRec": 0,
-        "DarkOrgRec": 0,
-        "OrgRec": 0,
-        "DarkYellowRec": 0.1,
-        "YellowRec": 0.2,
-        "DarkGreenRec": 0.5,
-        "GreenRec": 0.7,
-        "LightGreenRec": 0.75,
-        "LightestGreenRec": 1
+        "DarkRedRec": 0.2,
+        "RedRec": 0.3,
+        "DarkOrgRec": 0.3,
+        "OrgRec": 0.4,
+        "DarkYellowRec": 0.6,
+        "YellowRec": 0.7,
+        "DarkGreenRec": 0.3,
+        "GreenRec": 0.3,
+        "LightGreenRec": 0.2,
+        "LightestGreenRec": 0
       },
       "TotalPlayCount": 621982,
       "DifficultyPlayCount": 212728,
