@@ -1,4 +1,3 @@
-// Assets/Scripts/Play Menu Scene/SongListManager.cs
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,46 +9,49 @@ public class SongListManager : MonoBehaviour
 {
     [Header("UI References")]
     [Tooltip("Content RectTransform under ScrollView/Viewport")]
-    public RectTransform contentParent;
+    public RectTransform      contentParent;
     [Tooltip("Prefab of a SongItem")]
-    public GameObject songItemPrefab;
+    public GameObject         songItemPrefab;
     [Tooltip("ScrollRect for the song list")]
-    public ScrollRect scrollRect;
+    public ScrollRect         scrollRect;
 
     [Header("Filters & Sorters")]
     [Tooltip("Dropdown for sort (None, Title, Artist, Length)")]
-    public TMP_Dropdown sortDropdown;
+    public TMP_Dropdown       sortDropdown;
     [Tooltip("Dropdown for group (None, Easy, Medium, Hard, Extreme)")]
-    public TMP_Dropdown groupDropdown;
+    public TMP_Dropdown       groupDropdown;
 
     [Header("Right-Side Panels")]
     [Tooltip("Controller for the main song info display")]
-    public MainInfoController mainInfo;
+    public MainInfoController     mainInfo;
     [Tooltip("Controller for the song statistics section")]
-    public SongStatsController statsController;
-
-    [Header("Specific Diff Stats")]
-    [Tooltip("Controller for Section 1 (mapper/source/genre/etc.)")]
+    public SongStatsController    statsController;
+    [Tooltip("Controller for mapper/source/genre/etc.")]
     public DiffSection1Controller section1Controller;
-
     [Tooltip("Controller for HP/Acc/Star bars")]
     public DiffSection2Controller section2Controller;
-
     [Tooltip("Controller for Success Rate/User Rating bars")]
     public DiffSection3Controller section3Controller;
 
+    [Header("Play Counts")]
+    [Tooltip("Controller for total & difficulty play counts")]
+    public SongPlayStatsController playStatsController;
+
+    [Tooltip("Controller for the leaderboard display (top 3)")]
+    public LeaderboardsController leaderboardsController;
+
     [Header("Audio Preview")]
     [Tooltip("AudioSource for background preview music")]
-    public AudioSource previewAudioSource;
+    public AudioSource        previewAudioSource;
 
     [Header("Optional Raycast Setup")]
-    public EventSystem eventSystem;
+    public EventSystem        eventSystem;
 
-    private readonly List<SongData> allSongs    = new List<SongData>();
+    private readonly List<SongData>           allSongs    = new List<SongData>();
     private readonly List<SongItemController> controllers = new List<SongItemController>();
-    private string searchQuery = "";
-    private SongData currentSong;
-    private BeatmapInfo currentBeatmap;
+    private string                            searchQuery = "";
+    private SongData                          currentSong;
+    private BeatmapInfo                       currentBeatmap;
     private readonly string[] groupOptions = { "None","Easy","Medium","Hard","Extreme" };
 
     void Awake()
@@ -89,30 +91,57 @@ public class SongListManager : MonoBehaviour
         UpdateList();
     }
 
-    private void LoadSongsFromFolders()
+private void LoadSongsFromFolders()
+{
+    var idx = Resources.Load<TextAsset>("Songs/songIndex");
+    if (idx == null)
     {
-        var idx = Resources.Load<TextAsset>("Songs/songIndex");
-        if (idx == null)
-        {
-            Debug.LogError("Missing Songs/songIndex.json");
-            return;
-        }
+        Debug.LogError("Missing Songs/songIndex.json");
+        return;
+    }
 
-        var index = JsonUtility.FromJson<SongIndex>(idx.text);
-        foreach (var id in index.songIDs)
+    var index = JsonUtility.FromJson<SongIndex>(idx.text);
+    foreach (var id in index.songIDs)
+    {
+        try
         {
+            // Load the raw JSON asset
             var ta = Resources.Load<TextAsset>($"Songs/{id}/SongData");
-            if (ta == null) continue;
-            var song = JsonUtility.FromJson<SongData>(ta.text);
-            if (song == null || string.IsNullOrEmpty(song.songName)) continue;
+            if (ta == null)
+            {
+                Debug.LogWarning($"[SongListManager] No SongData.json for '{id}', skipping");
+                continue;
+            }
 
+            // Pre‐remap numeric keys (300, 200, etc.) to valid C# names (_300, _200, etc.)
+            string json = ta.text
+                .Replace("\"300\"", "\"_300\"")
+                .Replace("\"200\"", "\"_200\"")
+                .Replace("\"100\"", "\"_100\"")
+                .Replace("\"50\"",  "\"_50\"");
+
+            // Parse into our data model
+            var song = JsonUtility.FromJson<SongData>(json);
+            if (song == null || string.IsNullOrEmpty(song.songName))
+            {
+                Debug.LogWarning($"[SongListManager] Invalid or empty SongData in '{id}', skipping");
+                continue;
+            }
+
+            // Load optional assets
             song.coverArt  = Resources.Load<Sprite>($"Songs/{id}/cover");
             song.mainCover = Resources.Load<Sprite>($"Songs/{id}/mainCover");
             song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/song");
 
             allSongs.Add(song);
         }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[SongListManager] Error loading '{id}': {ex.Message}");
+        }
     }
+}
+
 
     private void UpdateList()
     {
@@ -196,42 +225,42 @@ public class SongListManager : MonoBehaviour
             if (c != expanded) c.Collapse();
     }
 
-public void SelectDifficulty(SongData song, BeatmapInfo bm)
-{
-    // store selection
-    currentSong      = song;
-    currentBeatmap   = bm;
-
-    // update UI panels
-    mainInfo?.UpdateMainInfo(song, bm);
-    statsController?.UpdateStats(song, bm);
-    section1Controller?.UpdateSection(bm);
-    section2Controller?.UpdateSection2(bm);
-    section3Controller?.UpdateSection3(currentBeatmap);
-
-
-
-    if (previewAudioSource == null)
-        return;
-
-    if (song.audioClip != null)
+    public void SelectDifficulty(SongData song, BeatmapInfo bm)
     {
-        // if it's a new clip OR we aren't currently playing, restart it
-        if (previewAudioSource.clip != song.audioClip || !previewAudioSource.isPlaying)
+        // store selection
+        currentSong    = song;
+        currentBeatmap = bm;
+
+        // update UI panels
+        mainInfo?.UpdateMainInfo(song, bm);
+        statsController?.UpdateStats(song, bm);
+        section1Controller?.UpdateSection(bm);
+        section2Controller?.UpdateSection2(bm);
+        section3Controller?.UpdateSection3(bm);
+        playStatsController?.UpdatePlayStats(bm);
+        leaderboardsController?.UpdateLeaderboards(bm);
+
+
+        if (previewAudioSource == null)
+            return;
+
+        if (song.audioClip != null)
         {
-            previewAudioSource.clip = song.audioClip;
-            previewAudioSource.time = song.audioClip.length * 0.5f;
-            previewAudioSource.Play();
+            // if it's a new clip OR we aren't currently playing, restart it
+            if (previewAudioSource.clip != song.audioClip || !previewAudioSource.isPlaying)
+            {
+                previewAudioSource.clip = song.audioClip;
+                previewAudioSource.time = song.audioClip.length * 0.5f;
+                previewAudioSource.Play();
+            }
+        }
+        else
+        {
+            // no audio: stop and clear the clip so later selections will trigger a restart
+            previewAudioSource.Stop();
+            previewAudioSource.clip = null;
         }
     }
-    else
-    {
-        // no audio: stop and clear the clip so later selections will trigger a restart
-        previewAudioSource.Stop();
-        previewAudioSource.clip = null;
-    }
-}
-
 
     public void LayoutRebuild(RectTransform rt)
     {

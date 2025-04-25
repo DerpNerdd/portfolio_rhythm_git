@@ -40,6 +40,37 @@ public class BeatmapInfo {
     public float  SuccessRate;
     public UserRating   UserRating;
     public RatingSpread RatingSpread;
+    public int    TotalPlayCount;
+    public int    DifficultyPlayCount;
+    public Leaderboard  Leaderboard;
+}
+
+[System.Serializable]
+public class Points
+{
+    public int _300;
+    public int _200;
+    public int _100;
+    public int _50;
+    public int X;
+}
+
+[System.Serializable]
+public class LeaderboardEntry
+{
+    public string Username;
+    public int    Combo;
+    public float  Accuracy;
+    public Points Points;
+    public int    Score;
+}
+
+[System.Serializable]
+public class Leaderboard
+{
+    public LeaderboardEntry First;
+    public LeaderboardEntry Second;
+    public LeaderboardEntry Third;
 }
 
 [System.Serializable]
