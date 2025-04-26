@@ -36,7 +36,6 @@ public class SongListManager : MonoBehaviour
     [Header("Play Counts")]
     [Tooltip("Controller for total & difficulty play counts")]
     public SongPlayStatsController playStatsController;
-
     [Tooltip("Controller for the leaderboard display (top 3)")]
     public LeaderboardsController leaderboardsController;
 
@@ -91,57 +90,57 @@ public class SongListManager : MonoBehaviour
         UpdateList();
     }
 
-private void LoadSongsFromFolders()
-{
-    var idx = Resources.Load<TextAsset>("Songs/songIndex");
-    if (idx == null)
+    private void LoadSongsFromFolders()
     {
-        Debug.LogError("Missing Songs/songIndex.json");
-        return;
-    }
-
-    var index = JsonUtility.FromJson<SongIndex>(idx.text);
-    foreach (var id in index.songIDs)
-    {
-        try
+        var idx = Resources.Load<TextAsset>("Songs/songIndex");
+        if (idx == null)
         {
-            // Load the raw JSON asset
-            var ta = Resources.Load<TextAsset>($"Songs/{id}/SongData");
-            if (ta == null)
-            {
-                Debug.LogWarning($"[SongListManager] No SongData.json for '{id}', skipping");
-                continue;
-            }
-
-            // Pre‐remap numeric keys (300, 200, etc.) to valid C# names (_300, _200, etc.)
-            string json = ta.text
-                .Replace("\"300\"", "\"_300\"")
-                .Replace("\"200\"", "\"_200\"")
-                .Replace("\"100\"", "\"_100\"")
-                .Replace("\"50\"",  "\"_50\"");
-
-            // Parse into our data model
-            var song = JsonUtility.FromJson<SongData>(json);
-            if (song == null || string.IsNullOrEmpty(song.songName))
-            {
-                Debug.LogWarning($"[SongListManager] Invalid or empty SongData in '{id}', skipping");
-                continue;
-            }
-
-            // Load optional assets
-            song.coverArt  = Resources.Load<Sprite>($"Songs/{id}/cover");
-            song.mainCover = Resources.Load<Sprite>($"Songs/{id}/mainCover");
-            song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/song");
-
-            allSongs.Add(song);
+            Debug.LogError("Missing Songs/songIndex.json");
+            return;
         }
-        catch (System.Exception ex)
+
+        var index = JsonUtility.FromJson<SongIndex>(idx.text);
+        foreach (var id in index.songIDs)
         {
-            Debug.LogWarning($"[SongListManager] Error loading '{id}': {ex.Message}");
+            try
+            {
+                var ta = Resources.Load<TextAsset>($"Songs/{id}/SongData");
+                if (ta == null)
+                {
+                    Debug.LogWarning($"[SongListManager] No SongData.json for '{id}', skipping");
+                    continue;
+                }
+
+                // remap numeric JSON keys for points
+                string json = ta.text
+                    .Replace("\"300\"", "\"_300\"")
+                    .Replace("\"200\"", "\"_200\"")
+                    .Replace("\"100\"", "\"_100\"")
+                    .Replace("\"50\"",  "\"_50\"");
+
+                var song = JsonUtility.FromJson<SongData>(json);
+                if (song == null || string.IsNullOrEmpty(song.songName))
+                {
+                    Debug.LogWarning($"[SongListManager] Invalid or empty SongData in '{id}', skipping");
+                    continue;
+                }
+
+                // store the folder ID
+                song.resourceFolderID = id;
+
+                // load optional assets
+                song.coverArt  = Resources.Load<Sprite>($"Songs/{id}/cover");
+                song.mainCover = Resources.Load<Sprite>($"Songs/{id}/mainCover");
+                song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/song");
+
+                allSongs.Add(song);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[SongListManager] Error loading '{id}': {ex.Message}");
+            }
         }
     }
-}
-
 
     private void UpdateList()
     {
@@ -225,11 +224,17 @@ private void LoadSongsFromFolders()
             if (c != expanded) c.Collapse();
     }
 
+    // <-- made public so SongItemController can call it:
     public void SelectDifficulty(SongData song, BeatmapInfo bm)
     {
         // store selection
         currentSong    = song;
         currentBeatmap = bm;
+
+        // populate our static holder for loading scene:
+        SelectedChart.Song     = song;
+        SelectedChart.Beatmap  = bm;
+        SelectedChart.ChartPath = $"Songs/{song.resourceFolderID}/chart";
 
         // update UI panels
         mainInfo?.UpdateMainInfo(song, bm);
@@ -240,25 +245,21 @@ private void LoadSongsFromFolders()
         playStatsController?.UpdatePlayStats(bm);
         leaderboardsController?.UpdateLeaderboards(bm);
 
-
-        if (previewAudioSource == null)
-            return;
-
-        if (song.audioClip != null)
+        // audio preview...
+        if (previewAudioSource != null)
         {
-            // if it's a new clip OR we aren't currently playing, restart it
-            if (previewAudioSource.clip != song.audioClip || !previewAudioSource.isPlaying)
+            if (song.audioClip != null &&
+                (previewAudioSource.clip != song.audioClip || !previewAudioSource.isPlaying))
             {
                 previewAudioSource.clip = song.audioClip;
                 previewAudioSource.time = song.audioClip.length * 0.5f;
                 previewAudioSource.Play();
             }
-        }
-        else
-        {
-            // no audio: stop and clear the clip so later selections will trigger a restart
-            previewAudioSource.Stop();
-            previewAudioSource.clip = null;
+            else if (song.audioClip == null)
+            {
+                previewAudioSource.Stop();
+                previewAudioSource.clip = null;
+            }
         }
     }
 
