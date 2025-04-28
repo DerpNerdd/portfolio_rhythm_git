@@ -5,8 +5,8 @@ using TMPro;
 
 [System.Serializable]
 public class ChartNote {
-    public float time;       // when to hit
-    public int   laneIndex;  // which lane 0…N-1
+    public float time;
+    public int   laneIndex;
 }
 
 [System.Serializable]
@@ -17,31 +17,39 @@ public class ChartData {
 public class RhythmGameManager : MonoBehaviour
 {
     [Header("References")]
-    public NoteSpawner         noteSpawner;   // handles instantiation
-    public RectTransform       hitLine;       // target y pos
+    public NoteSpawner     noteSpawner;
+    public RectTransform   hitLine;
 
     [Header("Gameplay")]
-    public float               approachTime = 2f;
+    public float           approachTime   = 2f;
+    [Tooltip("± seconds tolerance for PERFECT")]
+    public float           hitWindow      = 0.15f;
+    [Tooltip("± seconds tolerance for WONDERFUL (must be < hitWindow)")]
+    public float           wonderfulWindow= 0.05f;
 
     [Header("UI Elements")]
-    public TextMeshProUGUI     scoreText;
-    public TextMeshProUGUI     comboText;
-    public TextMeshProUGUI     accuracyText;
-    public TextMeshProUGUI     judgmentText;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI comboText;
+    public TextMeshProUGUI accuracyText;
+    public TextMeshProUGUI judgmentText;
 
     [Header("Audio")]
-    public AudioSource         audioPlayer;
+    public AudioSource     audioPlayer;
 
     [Header("Input")]
-    public KeyCode[]           laneKeys = { KeyCode.D, KeyCode.F, KeyCode.J, KeyCode.K };
-    public float               hitWindow = 0.15f;
+    public KeyCode[]       laneKeys  = { KeyCode.D, KeyCode.F, KeyCode.J, KeyCode.K };
 
     private int score, combo, hits, attempts;
 
     void Start()
     {
+        // play the chart’s song
+        if (SelectedChart.Song?.audioClip != null)
+            audioPlayer.clip = SelectedChart.Song.audioClip;
         if (audioPlayer.clip != null)
             audioPlayer.Play();
+        else
+            Debug.LogWarning("No AudioClip on SelectedChart.Song!");
 
         UpdateUI();
         LoadAndSpawnNotes();
@@ -49,58 +57,45 @@ public class RhythmGameManager : MonoBehaviour
 
     void Update()
     {
-        // per‐lane key detection
         for (int lane = 0; lane < laneKeys.Length; lane++)
-        {
             if (Input.GetKeyDown(laneKeys[lane]))
                 TryHit(lane);
-        }
     }
 
     void UpdateUI()
     {
         scoreText.text    = score.ToString("N0");
         comboText.text    = combo > 0 ? $"{combo}x" : "";
-        float acc         = attempts > 0 ? (hits / (float)attempts) * 100f : 100f;
+        float acc         = attempts > 0 ? (hits/(float)attempts)*100f : 100f;
         accuracyText.text = $"{acc:F1}%";
     }
 
     void LoadAndSpawnNotes()
     {
-        // load chart JSON
-        string path = SelectedChart.ChartPath;
-        var ta = Resources.Load<TextAsset>(path);
-        if (ta == null)
-        {
-            Debug.LogError($"Couldn't load chart at '{path}'");
-            return;
-        }
+        var ta = Resources.Load<TextAsset>(SelectedChart.ChartPath);
+        if (ta == null) { Debug.LogError("Couldn't load chart!"); return; }
         var chart = JsonUtility.FromJson<ChartData>(ta.text);
 
-        // compute Y positions
-        float spawnY = noteSpawner.noteContainer.rect.height;
+        float spawnY = noteSpawner.lanesContainer.rect.height;
         float hitY   = hitLine.anchoredPosition.y;
 
         foreach (var n in chart.notes)
         {
-            // pass laneIndex into spawner & controller
             var rt = noteSpawner.SpawnNote(n.laneIndex, spawnY);
-            if (rt != null)
-            {
-                var nc = rt.GetComponent<NoteController>();
-                if (nc != null)
-                    nc.Init(n.laneIndex, n.time, approachTime, spawnY, hitY, this);
-            }
+            if (rt == null) continue;
+            var nc = rt.GetComponent<NoteController>();
+            nc?.Init(n.laneIndex, n.time, approachTime, spawnY, hitY, this);
         }
     }
 
     void TryHit(int lane)
     {
-        var allNotes  = noteSpawner.noteContainer.GetComponentsInChildren<NoteController>();
+        var allNotes = noteSpawner.lanesContainer.GetComponentsInChildren<NoteController>();
         NoteController best = null;
         float bestDelta = float.MaxValue;
         float now = audioPlayer.time;
 
+        // find closest note in time
         foreach (var nc in allNotes)
         {
             if (nc.laneIndex != lane || nc.handled) continue;
@@ -114,12 +109,31 @@ public class RhythmGameManager : MonoBehaviour
 
         if (best != null && bestDelta <= hitWindow)
         {
-            // tiered judgment
-            string judgment;
-            int points;
-            if (bestDelta <= hitWindow * 0.33f) { judgment = "Perfect"; points = 300; }
-            else if (bestDelta <= hitWindow * 0.67f) { judgment = "Good"; points = 100; }
-            else { judgment = "OK"; points = 50; }
+            // 1) Wonderful tier
+            string judgment; int points;
+            if (bestDelta <= wonderfulWindow)
+            {
+                judgment = "Wonderful"; 
+                points   = 500;
+            }
+            // 2) Perfect
+            else if (bestDelta <= hitWindow * 0.33f)
+            {
+                judgment = "Perfect"; 
+                points   = 300;
+            }
+            // 3) Good
+            else if (bestDelta <= hitWindow * 0.67f)
+            {
+                judgment = "Good";    
+                points   = 100;
+            }
+            // 4) OK
+            else
+            {
+                judgment = "OK";      
+                points   =  50;
+            }
 
             RegisterHit(judgment, points);
             best.handled = true;
@@ -129,17 +143,17 @@ public class RhythmGameManager : MonoBehaviour
 
     public void RegisterHit(string judgment, int points)
     {
-        score   += points;
-        combo   += 1;
-        hits    += 1;
-        attempts+= 1;
+        score    += points;
+        combo    += 1;
+        hits     += 1;
+        attempts += 1;
         judgmentText.text = judgment;
         UpdateUI();
     }
 
     public void RegisterMiss()
     {
-        combo = 0;
+        combo    = 0;
         attempts += 1;
         judgmentText.text = "Miss";
         UpdateUI();
