@@ -234,7 +234,7 @@ public class SongListManager : MonoBehaviour
         // populate our static holder for loading scene:
         SelectedChart.Song     = song;
         SelectedChart.Beatmap  = bm;
-        SelectedChart.ChartPath = $"Songs/{song.resourceFolderID}/chart";
+        SelectedChart.ChartPath =  $"Songs/{song.resourceFolderID}/{bm.chartFile}";
 
         // update UI panels
         mainInfo?.UpdateMainInfo(song, bm);

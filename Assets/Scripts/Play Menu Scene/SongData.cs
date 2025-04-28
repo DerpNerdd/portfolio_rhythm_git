@@ -68,6 +68,8 @@ public class BeatmapInfo {
     public int    TotalPlayCount;
     public int    DifficultyPlayCount;
     public Leaderboard Leaderboard;
+    public string chartFile;
+
 }
 
 [System.Serializable]

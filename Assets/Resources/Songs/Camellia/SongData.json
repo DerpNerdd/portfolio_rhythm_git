@@ -10,6 +10,7 @@
       "mapperName": "DerpNerd",
       "Source": "UUFO",
       "Genre": "Electronic",
+      "chartFile": "easyChart",
       "bpm": 115,
       "Language": "Instrumental",
       "Tags" : [
@@ -92,6 +93,7 @@
       "Genre": "Electronic",
       "bpm": 115,
       "Language": "Instrumental",
+      "chartFile": "hardChart",
       "Tags" : [
         "Camellia",
         "UUFO",
