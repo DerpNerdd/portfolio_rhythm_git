@@ -26,9 +26,9 @@ public class RhythmGameManager : MonoBehaviour
     public float beatsOnScreen = 4f;
 
     [Header("Timing Windows (s)")]
-    public float perfectWindow = 0.10f;
-    public float greatWindow   = 0.25f;
-    public float goodWindow    = 0.30f;
+    public float perfectWindow = 0.05f;
+    public float greatWindow   = 0.15f;
+    public float goodWindow    = 0.25f;
 
     [Header("Scoring")]
     [Tooltip("Total score awarded if every note is Perfect")] 
