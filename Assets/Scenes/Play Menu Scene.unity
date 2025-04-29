@@ -13898,6 +13898,7 @@ GameObject:
   - component: {fileID: 913874395}
   - component: {fileID: 913874394}
   - component: {fileID: 913874393}
+  - component: {fileID: 913874399}
   m_Layer: 0
   m_Name: settingsBar
   m_TagString: Untagged
@@ -14034,6 +14035,37 @@ Transform:
   - {fileID: 802089198}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &913874399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913874392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c404218573747d43866511a84698cb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fullscreenToggle: {fileID: 362603656}
+  fpsDropdown: {fileID: 1865332952}
+  backgroundDimSlider: {fileID: 913430102}
+  visOffsetSlider: {fileID: 721841732}
+  mastersVolumeSlider: {fileID: 527327}
+  musicVolumeSlider: {fileID: 1821541117}
+  effectsVolumeSlider: {fileID: 1262731470}
+  audioOffsetSlider: {fileID: 1707320226}
+  keybindButtons:
+  - {fileID: 396512420}
+  - {fileID: 2114730691}
+  - {fileID: 534400507}
+  - {fileID: 67627390}
+  keybindLabels:
+  - {fileID: 1524268945}
+  - {fileID: 1165713191}
+  - {fileID: 481761448}
+  - {fileID: 304679502}
+  scrollSpeedSlider: {fileID: 459307270}
 --- !u!1 &918612354
 GameObject:
   m_ObjectHideFlags: 0
