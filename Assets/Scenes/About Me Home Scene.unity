@@ -953,6 +953,7 @@ GameObject:
   - component: {fileID: 512956085}
   - component: {fileID: 512956087}
   - component: {fileID: 512956086}
+  - component: {fileID: 512956088}
   m_Layer: 5
   m_Name: MainTitle
   m_TagString: Untagged
@@ -1009,7 +1010,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1076,6 +1077,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 512956084}
   m_CullTransparentMesh: 1
+--- !u!114 &512956088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512956084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca99a12795e58c47abc3832059d0ec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  faceColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
+  outlineColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
+  outlineWidth: 0
+  glowColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
+  glowDilate: 1.08
+  glowSoftness: 28.88
 --- !u!1001 &619118894
 PrefabInstance:
   m_ObjectHideFlags: 0
