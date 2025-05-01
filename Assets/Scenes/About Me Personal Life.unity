@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 377e7579ee625204ba3a8bb5488b136e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
+  sceneToLoad: About Me The Game
 --- !u!114 &58342959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -952,6 +952,7 @@ GameObject:
   - component: {fileID: 512956087}
   - component: {fileID: 512956086}
   - component: {fileID: 512956088}
+  - component: {fileID: 512956089}
   m_Layer: 5
   m_Name: MainTitle
   m_TagString: Untagged
@@ -998,7 +999,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: asdasdsadsa
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
   m_sharedMaterial: {fileID: -8521476441499342144, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
@@ -1025,8 +1026,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1035,7 +1036,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 2
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1090,9 +1091,22 @@ MonoBehaviour:
   faceColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
   outlineColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
   outlineWidth: 0
-  glowColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
-  glowDilate: 1.08
-  glowSoftness: 28.88
+  outlineSoftness: 0.2
+--- !u!114 &512956089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512956084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd496ffa0bda9e6499f4b2fbf9ab5064, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  letterDelay: 0.05
+  wordPause: 0.25
+  playOnStart: 1
 --- !u!1001 &619118894
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1853,7 +1867,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 377e7579ee625204ba3a8bb5488b136e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
+  sceneToLoad: About Me Education
 --- !u!114 &1420421269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2638,24 +2652,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 1927056009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36624f4de0793be468bccc81fa8d3cdf, type: 3}
+  m_Script: {fileID: 11500000, guid: b5df5e59fc4983844b193d6931442dbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelTransform: {fileID: 1927056010}
-  modelAnimator: {fileID: 619118897}
-  offscreenPosition: {x: -1.059109, y: -7.99, z: 34.4}
-  onScreenPosition: {x: -1.059109, y: -1.02, z: 34.4}
-  slideDuration: 1
-  waveTrigger: wave1
-  waveDuration: 1.5
-  isTalkingParam: isTalking
-  greetingText: {fileID: 512956086}
-  greetingMessage: Hello! My Name is Alan Sanchez!
-  subtitleText: {fileID: 0}
-  subtitleMessage: Click the buttons to learn more :3.
-  wordDelay: 0.35
-  voiceAudio: {fileID: 418827231}
-  bubbleButtons:
+  introModelTransform: {fileID: 1927056010}
+  introModelAnimator: {fileID: 619118897}
+  altOffscreenPosition: {x: -1.059109, y: -7.999, z: 34.4}
+  altOnscreenPosition: {x: -1.059109, y: -1.02, z: 34.4}
+  altSlideDuration: 1
+  altWaveTrigger: wave1
+  altWaveDuration: 2.8
+  altIsTalkingParam: isTalking
+  greetingText2: {fileID: 512956086}
+  greetingMessage2: "I\u2019m a young web designer and Full-Stack Developer out of
+    Arizona, though my passion has always been into mechanical engineering.\r\n\r\nAs
+    a kid, I\u2019ve had an absolute love for art, and that love for art transformed
+    into a love for web design, which has all culminated in this portfolio. I love
+    all things video games, ALL THINGS MUSIC, and all things computer.\r\n\r\nThank
+    you to my friends and family for giving me the opportunity to live this insane
+    dream.\r\n"
+  letterDelay2: 0.05
+  wordDelay2: 0.05
+  voiceAudio2: {fileID: 418827231}
+  bubbleButtons2:
   - {fileID: 1420421265}
   - {fileID: 58342955}
 --- !u!1 &2026372436

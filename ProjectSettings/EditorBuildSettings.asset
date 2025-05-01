@@ -24,6 +24,15 @@ EditorBuildSettings:
     path: Assets/Scenes/About Me Home Scene.unity
     guid: 4b8094b7cfe6ddd4993aa94c1f213788
   - enabled: 1
+    path: Assets/Scenes/About Me Education.unity
+    guid: 84f30087df0cc9e4eb35731d5cd7ebf8
+  - enabled: 1
+    path: Assets/Scenes/About Me Personal Life.unity
+    guid: 0c27501964c8d0f4daf44d514bcb3ce3
+  - enabled: 1
+    path: Assets/Scenes/About Me The Game.unity
+    guid: 792374f43af945749b5fbb55994d5995
+  - enabled: 1
     path: Assets/Scenes/Projects Scene.unity
     guid: 7e37999357ae9de478bfd4c5b6d8c446
   - enabled: 1

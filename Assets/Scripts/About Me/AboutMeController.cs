@@ -24,10 +24,14 @@ public class AboutMeController : MonoBehaviour
 
     [Header("Intro Text")]
     public TextMeshProUGUI greetingText;
-    public string        greetingMessage = "Hello! My Name is Alan Sanchez!";
+    
+    [TextArea]
+    public string          greetingMessage = "Hello! My Name is Alan Sanchez!";
     public TextMeshProUGUI subtitleText;
-    public string        subtitleMessage = "Click the buttons to learn more :3.";
-    public float         wordDelay       = 0.25f;
+    public string          subtitleMessage = "Click the buttons to learn more :3.";
+    public float           letterDelay     = 0.05f;   // new: delay per character
+    public float           wordDelay       = 0.25f;   // pause after space/newline
+
 
     [Header("Voice Audio")]
     public AudioSource voiceAudio;
@@ -90,17 +94,19 @@ public class AboutMeController : MonoBehaviour
 
     IEnumerator TypewriterEffect(TextMeshProUGUI textComp, string fullText)
     {
-        string[] words = fullText.Split(' ');
         textComp.text = string.Empty;
-        for (int i = 0; i < words.Length; i++)
+        foreach (char c in fullText)
         {
-            if (i > 0)
-                textComp.text += " ";
-            textComp.text += words[i];
-            yield return new WaitForSeconds(wordDelay);
+            textComp.text += c;
+            // if we just printed a space or newline, pause for wordDelay
+            if (c == ' ' || c == '\n')
+                yield return new WaitForSeconds(wordDelay);
+            else
+                yield return new WaitForSeconds(letterDelay);
         }
     }
 }
+
 
 public class BubbleButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
