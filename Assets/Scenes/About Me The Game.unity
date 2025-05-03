@@ -998,7 +998,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: asdasdsadsa
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
   m_sharedMaterial: {fileID: -8521476441499342144, guid: fb6ecda909ce62441a24454ded9a2ec1, type: 2}
@@ -1025,8 +1025,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1090,9 +1090,7 @@ MonoBehaviour:
   faceColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
   outlineColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
   outlineWidth: 0
-  glowColor: {r: 0.81960785, g: 0.81960785, b: 1, a: 1}
-  glowDilate: 1.08
-  glowSoftness: 28.88
+  outlineSoftness: 0.2
 --- !u!1001 &619118894
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2223,7 +2221,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c519d03915e25a6429bda5924ef53366, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2638,24 +2636,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1927056009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36624f4de0793be468bccc81fa8d3cdf, type: 3}
+  m_Script: {fileID: 11500000, guid: b5df5e59fc4983844b193d6931442dbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelTransform: {fileID: 1927056010}
-  modelAnimator: {fileID: 619118897}
-  offscreenPosition: {x: -1.059109, y: -7.99, z: 34.4}
-  onScreenPosition: {x: -1.059109, y: -1.02, z: 34.4}
-  slideDuration: 1
-  waveTrigger: wave1
-  waveDuration: 1.5
-  isTalkingParam: isTalking
-  greetingText: {fileID: 512956086}
-  greetingMessage: Hello! My Name is Alan Sanchez!
-  subtitleText: {fileID: 0}
-  subtitleMessage: Click the buttons to learn more :3.
-  wordDelay: 0.35
-  voiceAudio: {fileID: 418827231}
-  bubbleButtons:
+  introModelTransform: {fileID: 1927056010}
+  introModelAnimator: {fileID: 619118897}
+  altOffscreenPosition: {x: -1.059109, y: -1.02, z: 34.4}
+  altOnscreenPosition: {x: -1.059109, y: -1.02, z: 34.4}
+  altSlideDuration: 0.1
+  altWaveTrigger: wave1
+  altWaveDuration: 2.8
+  altIsTalkingParam: isTalking
+  greetingText2: {fileID: 512956086}
+  greetingMessage2: 'If not obvious already, my portfolio is heavily inspired on
+    the open-source very popular rhythm game osu!Lazer!
+
+
+    I have had such an
+    immense love for rhythm games, Ive been playing with them for over 9 years now,
+    and I wanted to show my love and pour it all into this silly portfolio for you
+    all to enjoy!'
+  letterDelay2: 0.05
+  wordDelay2: 0.05
+  voiceAudio2: {fileID: 418827231}
+  bubbleButtons2:
   - {fileID: 1420421265}
   - {fileID: 58342955}
 --- !u!1 &2026372436

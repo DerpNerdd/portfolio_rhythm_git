@@ -2237,7 +2237,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c519d03915e25a6429bda5924ef53366, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2657,9 +2657,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   introModelTransform: {fileID: 1927056010}
   introModelAnimator: {fileID: 619118897}
-  altOffscreenPosition: {x: -1.059109, y: -7.999, z: 34.4}
+  altOffscreenPosition: {x: -1.059109, y: -1.02, z: 34.4}
   altOnscreenPosition: {x: -1.059109, y: -1.02, z: 34.4}
-  altSlideDuration: 1
+  altSlideDuration: 0.1
   altWaveTrigger: wave1
   altWaveDuration: 2.8
   altIsTalkingParam: isTalking
