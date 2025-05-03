@@ -841,7 +841,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 882b46e9ddfac79469b781471b105e41, type: 3}
+  m_audioClip: {fileID: 8300000, guid: c52be212cc8ccb545b6cbbd8a3475b0e, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -3005,7 +3005,7 @@ MonoBehaviour:
   subtitleText: {fileID: 761923079}
   subtitleMessage: Click the buttons to learn more :3
   letterDelay: 0.05
-  wordDelay: 0.15
+  wordDelay: 0.1
   voiceAudio: {fileID: 418827231}
   bubbleButtons:
   - {fileID: 679274620}

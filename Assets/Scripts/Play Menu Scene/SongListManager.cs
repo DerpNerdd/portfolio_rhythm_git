@@ -1,3 +1,4 @@
+// Assets/Scripts/Play Menu Scene/SongListManager.cs
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,50 +9,38 @@ using TMPro;
 public class SongListManager : MonoBehaviour
 {
     [Header("UI References")]
-    [Tooltip("Content RectTransform under ScrollView/Viewport")]
     public RectTransform      contentParent;
-    [Tooltip("Prefab of a SongItem")]
     public GameObject         songItemPrefab;
-    [Tooltip("ScrollRect for the song list")]
     public ScrollRect         scrollRect;
 
     [Header("Filters & Sorters")]
-    [Tooltip("Dropdown for sort (None, Title, Artist, Length)")]
     public TMP_Dropdown       sortDropdown;
-    [Tooltip("Dropdown for group (None, Easy, Medium, Hard, Extreme)")]
     public TMP_Dropdown       groupDropdown;
 
     [Header("Right-Side Panels")]
-    [Tooltip("Controller for the main song info display")]
     public MainInfoController     mainInfo;
-    [Tooltip("Controller for the song statistics section")]
     public SongStatsController    statsController;
-    [Tooltip("Controller for mapper/source/genre/etc.")]
     public DiffSection1Controller section1Controller;
-    [Tooltip("Controller for HP/Acc/Star bars")]
     public DiffSection2Controller section2Controller;
-    [Tooltip("Controller for Success Rate/User Rating bars")]
     public DiffSection3Controller section3Controller;
 
     [Header("Play Counts")]
-    [Tooltip("Controller for total & difficulty play counts")]
     public SongPlayStatsController playStatsController;
-    [Tooltip("Controller for the leaderboard display (top 3)")]
-    public LeaderboardsController leaderboardsController;
+    public LeaderboardsController   leaderboardsController;
 
     [Header("Audio Preview")]
-    [Tooltip("AudioSource for background preview music")]
     public AudioSource        previewAudioSource;
 
     [Header("Optional Raycast Setup")]
     public EventSystem        eventSystem;
 
+    // ─── Internal Data ──────────────────────────────────────────────────────
     private readonly List<SongData>           allSongs    = new List<SongData>();
     private readonly List<SongItemController> controllers = new List<SongItemController>();
     private string                            searchQuery = "";
     private SongData                          currentSong;
     private BeatmapInfo                       currentBeatmap;
-    private readonly string[] groupOptions = { "None","Easy","Medium","Hard","Extreme" };
+    private readonly string[]                 groupOptions = { "None","Easy","Medium","Hard","Extreme" };
 
     void Awake()
     {
@@ -60,9 +49,9 @@ public class SongListManager : MonoBehaviour
 
         if (previewAudioSource != null)
         {
-            previewAudioSource.loop = true;
-            previewAudioSource.playOnAwake = false;
-            previewAudioSource.volume = 0.2f;
+            previewAudioSource.loop      = true;
+            previewAudioSource.playOnAwake= false;
+            previewAudioSource.volume    = 0.2f;
         }
     }
 
@@ -73,7 +62,7 @@ public class SongListManager : MonoBehaviour
         groupDropdown.onValueChanged.AddListener(_ => UpdateList());
         UpdateList();
 
-        // Auto-select and expand the first song
+        // Auto-expand first entry
         if (controllers.Count > 0)
             controllers[0].mainButton.onClick.Invoke();
     }
@@ -86,7 +75,7 @@ public class SongListManager : MonoBehaviour
 
     public void FilterSongs(string query)
     {
-        searchQuery = query?.Trim().ToLowerInvariant() ?? "";
+        searchQuery = (query ?? "").Trim().ToLowerInvariant();
         UpdateList();
     }
 
@@ -98,8 +87,8 @@ public class SongListManager : MonoBehaviour
             Debug.LogError("Missing Songs/songIndex.json");
             return;
         }
-
         var index = JsonUtility.FromJson<SongIndex>(idx.text);
+
         foreach (var id in index.songIDs)
         {
             try
@@ -111,7 +100,7 @@ public class SongListManager : MonoBehaviour
                     continue;
                 }
 
-                // remap numeric JSON keys for points
+                // remap JSON keys (300→_300 etc)
                 string json = ta.text
                     .Replace("\"300\"", "\"_300\"")
                     .Replace("\"200\"", "\"_200\"")
@@ -119,19 +108,10 @@ public class SongListManager : MonoBehaviour
                     .Replace("\"50\"",  "\"_50\"");
 
                 var song = JsonUtility.FromJson<SongData>(json);
-                if (song == null || string.IsNullOrEmpty(song.songName))
-                {
-                    Debug.LogWarning($"[SongListManager] Invalid or empty SongData in '{id}', skipping");
-                    continue;
-                }
-
-                // store the folder ID
                 song.resourceFolderID = id;
-
-                // load optional assets
-                song.coverArt  = Resources.Load<Sprite>($"Songs/{id}/cover");
-                song.mainCover = Resources.Load<Sprite>($"Songs/{id}/mainCover");
-                song.audioClip = Resources.Load<AudioClip>($"Songs/{id}/song");
+                song.coverArt   = Resources.Load<Sprite>($"Songs/{id}/cover");
+                song.mainCover  = Resources.Load<Sprite>($"Songs/{id}/mainCover");
+                song.audioClip  = Resources.Load<AudioClip>($"Songs/{id}/song");
 
                 allSongs.Add(song);
             }
@@ -145,7 +125,6 @@ public class SongListManager : MonoBehaviour
     private void UpdateList()
     {
         IEnumerable<SongData> list = allSongs;
-
         if (!string.IsNullOrEmpty(searchQuery))
             list = list.Where(s =>
                 s.songName.ToLowerInvariant().Contains(searchQuery) ||
@@ -155,7 +134,7 @@ public class SongListManager : MonoBehaviour
         int g = groupDropdown.value;
         if (g > 0)
         {
-            var gf = groupOptions[g];
+            string gf = groupOptions[g];
             list = list.Where(s => s.beatmaps.Any(b => b.displayName == gf));
         }
 
@@ -173,10 +152,11 @@ public class SongListManager : MonoBehaviour
 
     private void PopulateList(List<SongData> songs, string groupFilter)
     {
-        foreach (var c in controllers)
-            Destroy(c.gameObject);
+        // Destroy old
+        foreach (var c in controllers) Destroy(c.gameObject);
         controllers.Clear();
 
+        // Instantiate new
         foreach (var s in songs)
         {
             var go  = Instantiate(songItemPrefab, contentParent);
@@ -186,6 +166,7 @@ public class SongListManager : MonoBehaviour
             ctl.Initialize(s, groupFilter);
         }
 
+        // Layout fix
         Canvas.ForceUpdateCanvases();
         LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent);
         if (scrollRect != null)
@@ -205,12 +186,11 @@ public class SongListManager : MonoBehaviour
     private void CheckClickOutside()
     {
         if (eventSystem == null) return;
-
         var pd   = new PointerEventData(eventSystem) { position = Input.mousePosition };
         var hits = new List<RaycastResult>();
         eventSystem.RaycastAll(pd, hits);
 
-        // collapse any open items but do NOT change the selected song
+        // collapse but don’t change selection
         if (!hits.Any(r => r.gameObject.GetComponentInParent<SongItemController>() != null))
         {
             foreach (var c in controllers)
@@ -224,19 +204,38 @@ public class SongListManager : MonoBehaviour
             if (c != expanded) c.Collapse();
     }
 
-    // <-- made public so SongItemController can call it:
+    /// <summary>
+    /// Called by UI or RandomButton: collapse current entry, pick a random song+beatmap,
+    /// expand it, and select it as if clicked.
+    /// </summary>
+    public void PlayRandomSong()
+    {
+        // 1) Collapse open entries
+        foreach (var c in controllers) c.Collapse();
+
+        // 2) Pick random song & beatmap
+        if (allSongs.Count == 0) return;
+        var song = allSongs[Random.Range(0, allSongs.Count)];
+        if (song.beatmaps == null || song.beatmaps.Count == 0) return;
+        var bm   = song.beatmaps[Random.Range(0, song.beatmaps.Count)];
+
+        // 3) Find its controller and expand it
+        var ctl = controllers.FirstOrDefault(c => c.SongData == song);
+        if (ctl != null) ctl.AnimateExpand();
+
+        // 4) Drive UI exactly as if clicked
+        SelectDifficulty(song, bm);
+    }
+
+    // <-- existing API used by SongItemController
     public void SelectDifficulty(SongData song, BeatmapInfo bm)
     {
-        // store selection
         currentSong    = song;
         currentBeatmap = bm;
-
-        // populate our static holder for loading scene:
         SelectedChart.Song     = song;
         SelectedChart.Beatmap  = bm;
-        SelectedChart.ChartPath =  $"Songs/{song.resourceFolderID}/{bm.chartFile}";
+        SelectedChart.ChartPath= $"Songs/{song.resourceFolderID}/{bm.chartFile}";
 
-        // update UI panels
         mainInfo?.UpdateMainInfo(song, bm);
         statsController?.UpdateStats(song, bm);
         section1Controller?.UpdateSection(bm);
@@ -245,7 +244,6 @@ public class SongListManager : MonoBehaviour
         playStatsController?.UpdatePlayStats(bm);
         leaderboardsController?.UpdateLeaderboards(bm);
 
-        // audio preview...
         if (previewAudioSource != null)
         {
             if (song.audioClip != null &&

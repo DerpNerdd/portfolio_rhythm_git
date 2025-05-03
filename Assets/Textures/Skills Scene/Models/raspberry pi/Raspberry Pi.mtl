@@ -1,0 +1,30 @@
+# Blender MTL File: 'Raspberry Pi.blend'
+# Material Count: 2
+
+newmtl Black
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump textures\\Raspberry Pi_Black_Normal.png
+map_Kd textures\\Raspberry Pi_Black_BaseColor.png
+map_Ns textures\\Raspberry Pi_Black_Roughness.png
+refl textures\\Raspberry Pi_Black_Metallic.png
+
+newmtl Logo
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump textures\\Raspberry Pi_Logo_Normal.png
+map_Kd textures\\Raspberry Pi_Logo_BaseColor.png
+map_Ns textures\\Raspberry Pi_Logo_Roughness.png
+refl textures\\Raspberry Pi_Logo_Metallic.png

@@ -938,7 +938,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 882b46e9ddfac79469b781471b105e41, type: 3}
+  m_audioClip: {fileID: 8300000, guid: b97eb59c00d773846a0d62d35f9d8fed, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -2769,7 +2769,7 @@ MonoBehaviour:
     I obtained many certifications in HTML, CSS, Javascript, Python. I have also
     learned JSX, NextJS, NodeJS, and Typescript. "
   letterDelay2: 0.05
-  wordDelay2: 0.05
+  wordDelay2: 0.03
   voiceAudio2: {fileID: 418827231}
   bubbleButtons2:
   - {fileID: 1420421265}

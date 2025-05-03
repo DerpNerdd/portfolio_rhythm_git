@@ -598,64 +598,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 26164877}
   m_CullTransparentMesh: 1
---- !u!1 &33098445
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 33098447}
-  - component: {fileID: 33098446}
-  m_Layer: 0
-  m_Name: SongListManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &33098446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 33098445}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e398bd782d6cc354ba517322d10f68a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contentParent: {fileID: 1042399346}
-  songItemPrefab: {fileID: 6103167753073142450, guid: 8f869b99fecea3b4c9308435f762fbde, type: 3}
-  scrollRect: {fileID: 0}
-  sortDropdown: {fileID: 0}
-  groupDropdown: {fileID: 0}
-  mainInfo: {fileID: 0}
-  statsController: {fileID: 0}
-  section1Controller: {fileID: 0}
-  section2Controller: {fileID: 0}
-  section3Controller: {fileID: 0}
-  playStatsController: {fileID: 0}
-  leaderboardsController: {fileID: 0}
-  previewAudioSource: {fileID: 0}
-  eventSystem: {fileID: 0}
---- !u!4 &33098447
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 33098445}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.032975, y: 1.6170647, z: -3.5206668}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &36767439
 GameObject:
   m_ObjectHideFlags: 0
@@ -2789,7 +2731,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 157671323}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1645385270}
+        m_TargetAssemblyTypeName: SongListManager, Assembly-CSharp
+        m_MethodName: PlayRandomSong
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &157671323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27977,11 +27931,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Easy
       m_Image: {fileID: 0}
-    - m_Text: Medium
-      m_Image: {fileID: 0}
     - m_Text: Hard
-      m_Image: {fileID: 0}
-    - m_Text: Extreme
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -31875,7 +31825,6 @@ SceneRoots:
   - {fileID: 1521583052}
   - {fileID: 2038358833}
   - {fileID: 1645385266}
-  - {fileID: 33098447}
   - {fileID: 670367731}
   - {fileID: 748304801}
   - {fileID: 498338383}

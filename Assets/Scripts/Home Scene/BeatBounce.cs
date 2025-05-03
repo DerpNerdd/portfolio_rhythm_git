@@ -1,9 +1,10 @@
+// BeatBounce.cs
 using UnityEngine;
 
 public class BeatBounce : MonoBehaviour
 {
     [Header("Audio Settings")]
-    // Assign your audio source in the Inspector (or leave empty or disabled to auto-find).
+    [Tooltip("Assign your AudioSource here. If left null or disabled, it will:\n1) Try MusicPlayer.instance\n2) Fall back to the GameObject tagged 'HomeAudio'")]
     public AudioSource audioSource;
     public int spectrumSize = 128;
 
@@ -16,17 +17,35 @@ public class BeatBounce : MonoBehaviour
 
     void Start()
     {
-        // If the audio source is null or disabled, try to find the persistent MusicPlayer's AudioSource.
+        // 1) Try inspector
         if (audioSource == null || !audioSource.enabled)
         {
+            // 2) Try persistent MusicPlayer
             if (MusicPlayer.instance != null)
             {
                 audioSource = MusicPlayer.instance.GetComponent<AudioSource>();
             }
             else
             {
-                Debug.LogError("No persistent MusicPlayer found for BeatBounce on " + gameObject.name);
+                // 3) Fallback to HomeAudio
+                var go = GameObject.FindWithTag("HomeAudio");
+                if (go != null)
+                {
+                    var src = go.GetComponent<AudioSource>();
+                    if (src != null)
+                    {
+                        if (!src.enabled) src.enabled = true;
+                        audioSource = src;
+                    }
+                }
             }
+        }
+
+        if (audioSource == null)
+        {
+            Debug.LogError($"BeatBounce: No AudioSource found for {gameObject.name}. Disabling bounce.");
+            enabled = false;
+            return;
         }
 
         initialScale = transform.localScale;
@@ -39,16 +58,14 @@ public class BeatBounce : MonoBehaviour
 
         audioSource.GetSpectrumData(spectrumData, 0, FFTWindow.Rectangular);
         float sum = 0f;
-        for (int i = 0; i < spectrumSize; i++)
-        {
-            sum += spectrumData[i];
-        }
-        float averageAmplitude = sum / spectrumSize;
-        Vector3 targetScale = initialScale * (1f + averageAmplitude * scaleMultiplier);
-        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * smoothSpeed);
+        foreach (var v in spectrumData) sum += v;
+        float avg = sum / spectrumSize;
+
+        Vector3 target = initialScale * (1f + avg * scaleMultiplier);
+        transform.localScale = Vector3.Lerp(transform.localScale, target, Time.deltaTime * smoothSpeed);
     }
 
-    // Call this after the transition to update the baseline scale.
+    // Call this if you need to re-baseline after a transition
     public void UpdateInitialScale()
     {
         initialScale = transform.localScale;

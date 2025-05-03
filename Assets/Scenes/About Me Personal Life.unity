@@ -839,7 +839,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 882b46e9ddfac79469b781471b105e41, type: 3}
+  m_audioClip: {fileID: 8300000, guid: d0dd7d34a94ac834ba3a3fb0644e0b36, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -2672,7 +2672,7 @@ MonoBehaviour:
     you to my friends and family for giving me the opportunity to live this insane
     dream.\r\n"
   letterDelay2: 0.05
-  wordDelay2: 0.05
+  wordDelay2: 0.0002
   voiceAudio2: {fileID: 418827231}
   bubbleButtons2:
   - {fileID: 1420421265}

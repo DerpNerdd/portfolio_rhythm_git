@@ -39,6 +39,7 @@ public class SongItemController : MonoBehaviour
 
     void Awake()
     {
+        // Prepare the expand/collapse container
         diffRect   = difficultyContainer as RectTransform;
         diffLayout = difficultyContainer.GetComponent<LayoutElement>()
                    ?? difficultyContainer.gameObject.AddComponent<LayoutElement>();
@@ -49,35 +50,29 @@ public class SongItemController : MonoBehaviour
         diffLayout.flexibleHeight  = 0;
 
         var hlg = iconContainer.GetComponent<HorizontalLayoutGroup>();
-        if (hlg != null)
-            hlg.spacing = iconSpacing;
+        if (hlg != null) hlg.spacing = iconSpacing;
     }
 
     /// <summary>
-    /// Initialize visuals & store songData.
+    /// Initialize UI for this song, build icons & difficulty entries.
     /// </summary>
     public void Initialize(SongData data, string groupFilter = null)
     {
         songData = data;
 
-        // 1) Main UI bar tint
-        if (mainUIBackground != null)
-            mainUIBackground.color = data.mainColor;
-
-        // 2) Thumbnail cover art
+        // Bar tint & thumbnails
+        if (mainUIBackground != null) mainUIBackground.color = data.mainColor;
         if (songBG != null && data.coverArt != null)
         {
             songBG.sprite = data.coverArt;
-            var c = songBG.color;
-            c.a = 0.5f;
-            songBG.color = c;
+            var c = songBG.color; c.a = 0.5f; songBG.color = c;
         }
 
-        // 3) Labels
+        // Text labels
         songNameText.text = data.songName;
         artistText.text   = data.artist;
 
-        // 4) Difficulty icons
+        // Icons for each matching difficulty
         IEnumerable<BeatmapInfo> toShow = data.beatmaps;
         if (!string.IsNullOrEmpty(groupFilter))
             toShow = toShow.Where(b => b.displayName == groupFilter);
@@ -89,7 +84,7 @@ public class SongItemController : MonoBehaviour
                 img.color = bm.color;
         }
 
-        // 5) Difficulty entries
+        // Build & hook up each difficulty button
         foreach (var bm in toShow)
         {
             var entryGO = Instantiate(difficultyEntryPrefab, difficultyContainer);
@@ -105,7 +100,7 @@ public class SongItemController : MonoBehaviour
                    .onClick.AddListener(() => PlayDifficulty(songData, bm));
         }
 
-        // 6) Hook expand/collapse
+        // Expand/collapse on header click
         mainButton.onClick.AddListener(ToggleExpand);
     }
 
@@ -116,14 +111,12 @@ public class SongItemController : MonoBehaviour
         if (expand)
         {
             manager?.NotifyItemExpanded(this);
-
-            // On song header click, immediately update the main info with the first difficulty
+            // Auto-select first difficulty when expanding via header
             if (songData != null && songData.beatmaps.Count > 0)
                 manager?.SelectDifficulty(songData, songData.beatmaps[0]);
         }
 
-        if (toggleCoroutine != null)
-            StopCoroutine(toggleCoroutine);
+        if (toggleCoroutine != null) StopCoroutine(toggleCoroutine);
         toggleCoroutine = StartCoroutine(AnimateToggle(expand));
         isExpanded = expand;
     }
@@ -133,7 +126,7 @@ public class SongItemController : MonoBehaviour
         if (!difficultyContainer.gameObject.activeSelf)
             difficultyContainer.gameObject.SetActive(true);
 
-        // Measure content
+        // Measure full height
         diffLayout.enabled = false;
         LayoutRebuilder.ForceRebuildLayoutImmediate(diffRect);
         float fullH = LayoutUtility.GetPreferredHeight(diffRect);
@@ -155,17 +148,15 @@ public class SongItemController : MonoBehaviour
         }
 
         diffLayout.preferredHeight = endH;
-        if (!expand)
-            difficultyContainer.gameObject.SetActive(false);
-
+        if (!expand) difficultyContainer.gameObject.SetActive(false);
         toggleCoroutine = null;
     }
 
+    /// <summary> Collapse this entry immediately. </summary>
     public void Collapse()
     {
         if (!isExpanded) return;
-        if (toggleCoroutine != null)
-            StopCoroutine(toggleCoroutine);
+        if (toggleCoroutine != null) StopCoroutine(toggleCoroutine);
 
         isExpanded = false;
         diffLayout.preferredHeight = 0;
@@ -175,10 +166,20 @@ public class SongItemController : MonoBehaviour
         manager?.LayoutRebuild(manager.contentParent);
     }
 
-    public void AnimateCollapse() => ToggleExpand();
-
+    /// <summary> Plays a difficulty as if clicked. </summary>
     private void PlayDifficulty(SongData song, BeatmapInfo bm)
     {
         manager?.SelectDifficulty(song, bm);
+    }
+
+    // ─── NEW API FOR RANDOM PICKER ─────────────────────────────────────────────
+
+    /// <summary> Expose this item’s SongData. </summary>
+    public SongData SongData => songData;
+
+    /// <summary> Programmatically expand the entry. </summary>
+    public void AnimateExpand()
+    {
+        if (!isExpanded) ToggleExpand();
     }
 }
