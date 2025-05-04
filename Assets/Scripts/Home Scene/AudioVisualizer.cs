@@ -1,147 +1,128 @@
-// AudioVisualizer.cs
+// Assets/Scripts/Home Scene/AudioVisualizer.cs
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class AudioVisualizer : MonoBehaviour
 {
     [Header("Audio Settings")]
-    [Tooltip("Assign your AudioSource here. If left null or disabled, it will:\n1) Try MusicPlayer.instance\n2) Fall back to the GameObject tagged 'HomeAudio'")]
     public AudioSource audioSource;
-
-    [Tooltip("Size of the spectrum data array. Typical: 128, 256, etc.")]
-    public int spectrumSize = 128;
-    public FFTWindow fftWindow = FFTWindow.BlackmanHarris;
+    public int         spectrumSize = 128;
 
     [Header("Visualizer Settings")]
-    public int numberOfBars = 64;
-    public float radius = 3f;
+    public int      numberOfBars      = 64;
+    public float    radius            = 3f;
     public GameObject barPrefab;
-    public float heightMultiplier = 50f;
-    public float baseBarHeight = 1.2f;
-    public float baseBarWidth = 0.5f;
+    public float    heightMultiplier  = 50f;
+    public float    baseBarHeight     = 1.2f;
+    public float    baseBarWidth      = 0.5f;
 
-    [Header("Bar Sensitivity Mapping")]
-    public float minBarScaleY = 1.0f;
-    public float maxBarScaleY = 2.5f;
-    public float maxIntensity = 1.0f;
+    [Header("Mapping Settings")]
+    public float    minBarScaleY      = 1.0f;
+    public float    maxBarScaleY      = 2.5f;
+    public float    maxIntensity      = 1.0f;
+    public float    intensityExponent = 0.5f;
 
-    [Header("Downsampling Settings")]
+    [Header("Downsampling")]
+    [Min(2)]
     public int desiredBands = 120;
 
-    [Header("Non-linear Remapping")]
-    public float intensityExponent = 0.5f;
+    GameObject[] bars;
+    float[]      downSampled;
+    AudioClip    lastClip = null;
 
-    private GameObject[] bars;
-    private float[] spectrumData;
-    private float[] downSampledSpectrum;
+    void OnValidate()
+    {
+        spectrumSize   = Mathf.Max(1, spectrumSize);
+        numberOfBars   = Mathf.Max(1, numberOfBars);
+        desiredBands   = Mathf.Max(2, desiredBands);
+        minBarScaleY   = Mathf.Max(0f, minBarScaleY);
+        maxBarScaleY   = Mathf.Max(minBarScaleY, maxBarScaleY);
+        baseBarHeight  = Mathf.Max(0f, baseBarHeight);
+        baseBarWidth   = Mathf.Max(0f, baseBarWidth);
+    }
 
     void Start()
     {
-        // 1) Try inspector assignment
+        // find/fallback AudioSource
         if (audioSource == null || !audioSource.enabled)
         {
-            // 2) Try persistent MusicPlayer
             if (MusicPlayer.instance != null)
-            {
                 audioSource = MusicPlayer.instance.GetComponent<AudioSource>();
-            }
             else
             {
-                // 3) Fallback to Home-scene AudioSource tagged "HomeAudio"
                 var go = GameObject.FindWithTag("HomeAudio");
-                if (go != null)
-                {
-                    var src = go.GetComponent<AudioSource>();
-                    if (src != null)
-                    {
-                        if (!src.enabled) src.enabled = true;
-                        audioSource = src;
-                    }
-                }
+                if (go != null) audioSource = go.GetComponent<AudioSource>();
             }
         }
-
-        if (audioSource == null)
+        if (audioSource == null || !audioSource.enabled)
         {
-            Debug.LogError($"AudioVisualizer: No AudioSource found on {gameObject.name}. Disabling visualizer.");
+            Debug.LogError("AudioVisualizer: No valid AudioSource.");
             enabled = false;
             return;
         }
 
-        if (barPrefab == null)
-        {
-            Debug.LogError($"AudioVisualizer: Bar Prefab not assigned on {gameObject.name}.");
-            enabled = false;
-            return;
-        }
+        // Prepare our down-sample buffer
+        downSampled = new float[desiredBands];
 
-        spectrumData = new float[spectrumSize];
-        downSampledSpectrum = new float[desiredBands];
-
-        // Instantiate bars in a circle
+        // Instantiate bars around a circle
         bars = new GameObject[numberOfBars];
-        float angleStep = 360f / numberOfBars;
+        float step = 360f / numberOfBars;
         for (int i = 0; i < numberOfBars; i++)
         {
-            float angleDeg = i * angleStep;
-            float rad = angleDeg * Mathf.Deg2Rad;
-            Vector3 pos = new Vector3(Mathf.Cos(rad) * radius, Mathf.Sin(rad) * radius, 0);
-            bars[i] = Instantiate(barPrefab, transform);
-            bars[i].transform.localPosition = pos;
-            bars[i].transform.localRotation = Quaternion.Euler(0, 0, angleDeg - 90f);
+            var b = Instantiate(barPrefab, transform);
+            float a = (i * step) * Mathf.Deg2Rad;
+            b.transform.localPosition = new Vector3(Mathf.Cos(a) * radius, Mathf.Sin(a) * radius, 0f);
+            b.transform.localRotation = Quaternion.Euler(0, 0, i * step - 90f);
+            b.transform.localScale    = new Vector3(baseBarWidth, baseBarHeight, 1f);
+            bars[i] = b;
         }
     }
 
     void Update()
     {
-        // Spectrum analysis
-        audioSource.GetSpectrumData(spectrumData, 0, fftWindow);
+        // ONLY initialize when we actually have a clip loaded with samples
+        if (audioSource.clip != lastClip
+            && audioSource.clip != null
+            && audioSource.clip.samples * audioSource.clip.channels > 0)
+        {
+            SpectrumProvider.Initialize(audioSource, spectrumSize * 2);
+            lastClip = audioSource.clip;
+        }
+
+        // Always update—SpectrumProvider now has a valid clip or simply returns no-op
+        SpectrumProvider.UpdateSpectrum();
+        var spec = SpectrumProvider.Spectrum;
+        if (spec == null || spec.Length == 0) return;
 
         // Downsample
         for (int i = 0; i < desiredBands; i++)
         {
-            float p = i * (spectrumSize - 1f) / (desiredBands - 1f);
-            int lo = Mathf.FloorToInt(p), hi = Mathf.Clamp(lo + 1, 0, spectrumSize - 1);
-            float t = p - lo;
-            downSampledSpectrum[i] = Mathf.Lerp(spectrumData[lo], spectrumData[hi], t);
+            float p = i * (spec.Length - 1f) / (desiredBands - 1f);
+            int lo = Mathf.FloorToInt(p);
+            int hi = Mathf.Min(lo + 1, spec.Length - 1);
+            downSampled[i] = Mathf.Lerp(spec[lo], spec[hi], p - lo);
         }
 
-        // Map to bar heights
-        float[] raw = new float[numberOfBars];
+        // Map to bars
         for (int i = 0; i < numberOfBars; i++)
         {
             int idx = Mathf.RoundToInt(i * (desiredBands - 1f) / (numberOfBars - 1f));
-            raw[i] = downSampledSpectrum[idx] * heightMultiplier;
-        }
+            float raw = downSampled[idx] * heightMultiplier;
 
-        // Smooth
-        float[] smooth = new float[numberOfBars];
-        for (int i = 0; i < numberOfBars; i++)
-        {
-            float prev = raw[(i - 1 + numberOfBars) % numberOfBars];
-            float next = raw[(i + 1) % numberOfBars];
-            smooth[i] = (prev + raw[i] + next) / 3f;
-        }
+            // neighbor smoothing
+            float prev   = downSampled[(idx - 1 + desiredBands) % desiredBands];
+            float next   = downSampled[(idx + 1) % desiredBands];
+            float smooth = (prev + raw + next) / 3f;
 
-        // Find dynamic max
-        float dynMax = 0.1f;
-        foreach (var v in smooth) dynMax = Mathf.Max(dynMax, v);
-        float effMax = Mathf.Clamp(dynMax, 0.1f, maxIntensity);
-
-        // Apply scales
-        for (int i = 0; i < numberOfBars; i++)
-        {
-            float norm = Mathf.InverseLerp(0.1f, effMax, smooth[i]);
+            float dynMax = Mathf.Max(0.1f, smooth);
+            float norm   = Mathf.InverseLerp(0.1f, Mathf.Min(dynMax, maxIntensity), smooth);
             norm = Mathf.Pow(norm, intensityExponent);
             float targetY = Mathf.Lerp(minBarScaleY, maxBarScaleY, norm);
-            float curY = bars[i].transform.localScale.y;
-            float newY = Mathf.Lerp(curY, targetY, Time.deltaTime * 10f);
-            bars[i].transform.localScale = new Vector3(baseBarWidth, newY, 1f);
 
-            if (bars[i].transform.childCount > 0)
-            {
-                float offset = baseBarHeight * (newY - 1f) / 2f;
-                bars[i].transform.GetChild(0).localPosition = new Vector3(0, offset, 0);
-            }
+            var tr = bars[i].transform;
+            tr.localScale = Vector3.Lerp(tr.localScale,
+                new Vector3(baseBarWidth, targetY, 1f),
+                Time.deltaTime * 10f);
         }
     }
 }

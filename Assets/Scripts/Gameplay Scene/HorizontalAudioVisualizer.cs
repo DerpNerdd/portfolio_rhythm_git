@@ -1,82 +1,75 @@
-// Assets/Scripts/Gameplay Scene/HorizontalAudioVisualizer.cs
-using System.Collections.Generic;
+// Assets/Scripts/Home Scene/HorizontalAudioVisualizer.cs
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(RectTransform))]
 public class HorizontalAudioVisualizer : MonoBehaviour
 {
     [Header("Audio Source")]
-    [Tooltip("The AudioSource playing your song")]
-    public AudioSource audioSource;
+    public AudioSource bgAudioSource;
 
-    [Header("UI Setup")]
-    [Tooltip("Parent RectTransform in your Canvas (behind notes)")]
-    public RectTransform  container;
-    [Tooltip("A UI Image prefab for a single bar; just set its Material")]
-    public Image          barPrefab;
-    [Tooltip("Number of bars to generate horizontally")]
-    public int            barCount = 64;
+    [Header("UI")]
+    public RectTransform container;
+    public Image         barPrefab;
+    public int           barCount = 64;
 
-    [Header("Bar Scaling")]
-    [Tooltip("Max bar height in px")]
-    public float          maxHeight = 200f;
-    [Tooltip("How quickly bars interpolate")]
-    public float          smoothSpeed = 8f;
+    [Header("Behavior")]
+    public float maxHeight   = 200f;
+    public float smoothSpeed = 8f;
+    public int   spectrumSize = 128;
 
-    [Header("FFT Settings")]
-    [Tooltip("Window type for FFT")]
-    public FFTWindow      window = FFTWindow.BlackmanHarris;
-
-    private float[]               spectrum;
-    private RectTransform[]       bars;
+    RectTransform[] bars;
+    AudioClip       lastClip = null;
 
     void Start()
     {
-        // sanity
-        if (audioSource == null) audioSource = FindObjectOfType<AudioSource>();
-        if (container   == null) container   = GetComponent<RectTransform>();
+        if (bgAudioSource == null)
+        {
+            Debug.LogError("HorizontalAudioVisualizer: No AudioSource.");
+            enabled = false;
+            return;
+        }
 
-        // allocate
-        spectrum = new float[barCount];
-        bars     = new RectTransform[barCount];
+        if (container == null)
+            container = GetComponent<RectTransform>();
 
-        // create bars
-        float width = container.rect.width / barCount;
+        bars = new RectTransform[barCount];
+        float w = container.rect.width / barCount;
         for (int i = 0; i < barCount; i++)
         {
             var img = Instantiate(barPrefab, container);
-            img.type = Image.Type.Simple;
+            img.type           = Image.Type.Simple;
             img.preserveAspect = false;
 
             var rt = img.rectTransform;
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(0, 0);
+            rt.anchorMin = rt.anchorMax = new Vector2(0,0);
             rt.pivot     = new Vector2(0.5f, 0f);
-            rt.sizeDelta = new Vector2(width, 1f);
-            rt.anchoredPosition = new Vector2(i * width + width * 0.5f, 0);
-
+            rt.sizeDelta = new Vector2(w, 1f);
+            rt.anchoredPosition = new Vector2(i * w + w * 0.5f, 0f);
             bars[i] = rt;
         }
     }
 
     void Update()
     {
-        // grab spectrum
-        audioSource.GetSpectrumData(spectrum, 0, window);
+        if (bgAudioSource.clip != lastClip
+            && bgAudioSource.clip != null
+            && bgAudioSource.clip.samples * bgAudioSource.clip.channels > 0)
+        {
+            SpectrumProvider.Initialize(bgAudioSource, spectrumSize * 2);
+            lastClip = bgAudioSource.clip;
+        }
 
-        // update each bar
+        SpectrumProvider.UpdateSpectrum();
+        var spec = SpectrumProvider.Spectrum;
+        if (spec == null || spec.Length == 0) return;
+
+        float w = container.rect.width / barCount;
         for (int i = 0; i < barCount; i++)
         {
-            float magnitude = spectrum[i] * maxHeight * 10f; // boost factor
-            float h = Mathf.Clamp(magnitude, 1f, maxHeight);
-            // smooth
-            float curH = bars[i].sizeDelta.y;
-            float newH = Mathf.Lerp(curH, h, Time.deltaTime * smoothSpeed);
-
-            var sd = bars[i].sizeDelta;
-            sd.y = newH;
-            bars[i].sizeDelta = sd;
+            int idx   = Mathf.Clamp(Mathf.FloorToInt((float)i / barCount * spec.Length), 0, spec.Length - 1);
+            float val = spec[idx] * maxHeight;
+            float cur = bars[i].sizeDelta.y;
+            bars[i].sizeDelta = new Vector2(w, Mathf.Lerp(cur, val, Time.deltaTime * smoothSpeed));
         }
     }
 }

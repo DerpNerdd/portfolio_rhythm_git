@@ -35,14 +35,18 @@ public class MusicPlayer : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    if (scene.name != welcomeSceneName && scene.name != homeSceneName)
     {
-        // if the newly-loaded scene is *not* Welcome or Home → tear down the music
-        if (scene.name != welcomeSceneName && scene.name != homeSceneName)
-        {
-            // unsub first so we don't get callbacks after destruction
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            Destroy(gameObject);
-        }
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        Destroy(gameObject);
+        return;
     }
+
+    // If we did survive into Home again, make sure we’re still playing:
+    var src = GetComponent<AudioSource>();
+    if (src != null && !src.isPlaying)
+        src.UnPause();
+}
 }

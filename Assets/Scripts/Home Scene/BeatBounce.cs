@@ -1,71 +1,55 @@
-// BeatBounce.cs
+// Assets/Scripts/Home Scene/BeatBounce.cs
 using UnityEngine;
 
 public class BeatBounce : MonoBehaviour
 {
-    [Header("Audio Settings")]
-    [Tooltip("Assign your AudioSource here. If left null or disabled, it will:\n1) Try MusicPlayer.instance\n2) Fall back to the GameObject tagged 'HomeAudio'")]
-    public AudioSource audioSource;
-    public int spectrumSize = 128;
+    [Header("Audio Source")]
+    public AudioSource bgAudioSource;
 
-    [Header("Bounce Settings")]
+    [Header("Bounce")]
     public float scaleMultiplier = 5f;
-    public float smoothSpeed = 4f;
+    public float smoothSpeed     = 4f;
+    public int   spectrumSize    = 128;
 
-    private Vector3 initialScale;
-    private float[] spectrumData;
+    Vector3 initialScale;
+    AudioClip lastClip = null;
 
     void Start()
     {
-        // 1) Try inspector
-        if (audioSource == null || !audioSource.enabled)
+        if (bgAudioSource == null)
         {
-            // 2) Try persistent MusicPlayer
-            if (MusicPlayer.instance != null)
-            {
-                audioSource = MusicPlayer.instance.GetComponent<AudioSource>();
-            }
-            else
-            {
-                // 3) Fallback to HomeAudio
-                var go = GameObject.FindWithTag("HomeAudio");
-                if (go != null)
-                {
-                    var src = go.GetComponent<AudioSource>();
-                    if (src != null)
-                    {
-                        if (!src.enabled) src.enabled = true;
-                        audioSource = src;
-                    }
-                }
-            }
-        }
-
-        if (audioSource == null)
-        {
-            Debug.LogError($"BeatBounce: No AudioSource found for {gameObject.name}. Disabling bounce.");
+            Debug.LogError("BeatBounce: No AudioSource.");
             enabled = false;
             return;
         }
-
         initialScale = transform.localScale;
-        spectrumData = new float[spectrumSize];
     }
 
     void Update()
     {
-        if (audioSource == null) return;
+        if (bgAudioSource.clip != lastClip
+            && bgAudioSource.clip != null
+            && bgAudioSource.clip.samples * bgAudioSource.clip.channels > 0)
+        {
+            SpectrumProvider.Initialize(bgAudioSource, spectrumSize * 2);
+            lastClip = bgAudioSource.clip;
+        }
 
-        audioSource.GetSpectrumData(spectrumData, 0, FFTWindow.Rectangular);
+        SpectrumProvider.UpdateSpectrum();
+        var spec = SpectrumProvider.Spectrum;
+        if (spec == null || spec.Length == 0) return;
+
         float sum = 0f;
-        foreach (var v in spectrumData) sum += v;
-        float avg = sum / spectrumSize;
+        foreach (var v in spec) sum += v;
+        float avg = sum / spec.Length;
 
         Vector3 target = initialScale * (1f + avg * scaleMultiplier);
         transform.localScale = Vector3.Lerp(transform.localScale, target, Time.deltaTime * smoothSpeed);
     }
 
-    // Call this if you need to re-baseline after a transition
+    /// <summary>
+    /// Call this after your click‐transition to reset the bounce baseline.
+    /// </summary>
     public void UpdateInitialScale()
     {
         initialScale = transform.localScale;
