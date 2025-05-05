@@ -1,6 +1,5 @@
-// DynamicButtonLayout.cs
 using UnityEngine;
-using UnityEngine.UI;      // LayoutRebuilder lives here
+using UnityEngine.UI;
 using TMPro;
 
 [RequireComponent(typeof(LayoutElement))]
@@ -13,13 +12,13 @@ public class DynamicButtonLayout : MonoBehaviour
     public float horizontalPadding = 16f;
     public float verticalPadding   = 8f;
 
-    LayoutElement layoutElement;
-    RectTransform parentRect;
+    LayoutElement   layoutElement;
+    RectTransform   rt;
 
     void Awake()
     {
         layoutElement = GetComponent<LayoutElement>();
-        parentRect    = transform.parent as RectTransform;
+        rt            = GetComponent<RectTransform>();
 
         if (targetText == null)
             targetText = GetComponentInChildren<TMP_Text>();
@@ -30,18 +29,25 @@ public class DynamicButtonLayout : MonoBehaviour
     void Start()
     {
         UpdateLayout();
-        // force the VerticalLayoutGroup to pick up your preferred sizes immediately
-        Canvas.ForceUpdateCanvases();
-        if (parentRect != null)
-            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
     }
 
-    public void UpdateLayout()
-    {
-        targetText.ForceMeshUpdate();
-        float w = targetText.preferredWidth  + horizontalPadding;
-        float h = targetText.preferredHeight + verticalPadding;
-        layoutElement.preferredWidth  = w;
-        layoutElement.preferredHeight = h;
-    }
+public void UpdateLayout()
+{
+    targetText.ForceMeshUpdate();
+    float w = targetText.preferredWidth  + horizontalPadding;
+    float h = targetText.preferredHeight + verticalPadding;
+
+    layoutElement.minWidth        = w;
+    layoutElement.preferredWidth  = w;
+    layoutElement.minHeight       = h;
+    layoutElement.preferredHeight = h;
+
+    rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
+    rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,   h);
+
+    // ensure the parent VerticalLayoutGroup rebuilds immediately
+    Canvas.ForceUpdateCanvases();
+    var parentRect = rt.parent as RectTransform;
+    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+}
 }

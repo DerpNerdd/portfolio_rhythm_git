@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System.Collections.Generic;
 
 [DisallowMultipleComponent]
@@ -29,16 +30,29 @@ public class LinkListGenerator : MonoBehaviour
             return;
         }
 
+        // (Optional) clear out any existing buttons
+        foreach (Transform child in contentPanel) Destroy(child.gameObject);
+
         foreach (var entry in entries)
         {
-            // instantiate a new button under Content
+            // 1) Spawn the prefab under Content
             Button btn = Instantiate(buttonPrefab, contentPanel);
-            // set the displayed text
-            var txt = btn.GetComponentInChildren<Text>();
-            if (txt != null) txt.text = entry.title;
 
-            // capture url for the onClick closure
-            string targetURL = entry.url;
+            // 2) Populate its TMP label
+            TMP_Text tmp = btn.GetComponentInChildren<TMP_Text>();
+            if (tmp != null) tmp.text = entry.title;
+            else Debug.LogWarning("LinkListGenerator: No TMP_Text found on prefab!");
+
+            // 3) Force it to resize itself
+            var dyn = btn.GetComponent<DynamicButtonLayout>();
+            if (dyn != null) dyn.UpdateLayout();
+
+            // 4) Normalize URL and hook up the click
+            string targetURL = entry.url?.Trim() ?? "";
+            if (!targetURL.StartsWith("http://") && !targetURL.StartsWith("https://"))
+                targetURL = "https://" + targetURL;
+
+            Debug.Log($"LinkListGenerator: Opening URL → {targetURL}");
             btn.onClick.AddListener(() => Application.OpenURL(targetURL));
         }
     }
