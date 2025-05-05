@@ -1,0 +1,169 @@
+{
+  "songName": "Through the Fire and Flames",
+  "artist": "Dragonforce",
+  "mainColor": { "r": 1.0, "g": 0.0, "b": 0.0, "a": 1 },
+  "beatmaps": [
+    {
+      "displayName": "Easy",
+      "level": 5,
+      "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1 },
+      "mapperName": "MsMcBasketball",
+      "Source": "GH3",
+      "Genre": "Power Metal",
+      "chartFile": "ttfaf",
+      "bpm": 200,
+      "Language": "English",
+      "Tags" : [
+        "TTFAF",
+        "Dragonforce",
+        "Guitar Hero"
+      ],
+      "Submitted":"3 Aug 2006",
+      "Ranked": "15 Mar 2025",
+      "HPDrain": 5.5,
+      "Accuracy": 4,
+      "StarDifficulty": 5.00,
+      "SuccessRate": 90.5,
+      "UserRating": {
+        "Red": 9.5,
+        "Green": 90.5
+      },
+      "RatingSpread": {
+        "DarkRedRec": 0,
+        "RedRec": 0.1,
+        "DarkOrgRec": 0.1,
+        "OrgRec": 0.1,
+        "DarkYellowRec": 0.1,
+        "YellowRec": 0.2,
+        "DarkGreenRec": 0.5,
+        "GreenRec": 0.7,
+        "LightGreenRec": 0.5,
+        "LightestGreenRec": 0.4
+      },
+      "TotalPlayCount": 1147613,
+      "DifficultyPlayCount": 79849,
+      "Leaderboard":{
+        "First":{
+          "Username": "User",
+          "Combo": 1000,
+          "Accuracy": 99.95,
+          "Points":{
+            "300": 995,
+            "200": 4,
+            "100": 1,
+            "50": 0,
+            "X": 0
+          },
+          "Score": 997000
+        },
+        "Second":{
+          "Username": "User",
+          "Combo": 999,
+          "Accuracy": 99.90,
+          "Points":{
+            "300": 995,
+            "200": 4,
+            "100": 0,
+            "50": 0,
+            "X": 1
+          },
+          "Score": 996000
+        },
+        "Third":{
+          "Username": "User",
+          "Combo": 998,
+          "Accuracy": 99.85,
+          "Points":{
+            "300": 995,
+            "200": 3,
+            "100": 0,
+            "50": 0,
+            "X": 2
+          },
+          "Score": 995000
+        }
+      }
+    },
+    {
+      "displayName": "Hard",
+      "level": 10,
+      "color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1 },
+      "mapperName": "MsMcBasketball",
+      "Source": "GH3",
+      "Genre": "Power Metal",
+      "chartFile": "ttfaf",
+      "bpm": 200,
+      "Language": "English",
+      "Tags" : [
+        "TTFAF",
+        "Dragonforce",
+        "Guitar Hero"
+      ],
+      "Submitted":"3 Aug 2006",
+      "Ranked": "15 Mar 2025",
+      "HPDrain": 7.5,
+      "Accuracy": 7,
+      "StarDifficulty": 10.00,
+      "SuccessRate": 17.5,
+      "UserRating": {
+        "Red": 87.5,
+        "Green": 12.5
+      },
+      "RatingSpread": {
+        "DarkRedRec": 0.5,
+        "RedRec": 0.6,
+        "DarkOrgRec": 0.6,
+        "OrgRec": 0.7,
+        "DarkYellowRec": 1,
+        "YellowRec": 0.7,
+        "DarkGreenRec": 0.3,
+        "GreenRec": 0.3,
+        "LightGreenRec": 0.2,
+        "LightestGreenRec": 0
+      },
+      "TotalPlayCount": 1147613,
+      "DifficultyPlayCount": 1009712,
+      "Leaderboard":{
+        "First":{
+          "Username": "User",
+          "Combo": 6000,
+          "Accuracy": 99.95,
+          "Points":{
+            "300": 5995,
+            "200": 4,
+            "100": 1,
+            "50": 0,
+            "X": 0
+          },
+          "Score": 997000
+        },
+        "Second":{
+          "Username": "User",
+          "Combo": 5999,
+          "Accuracy": 99.90,
+          "Points":{
+            "300": 5995,
+            "200": 4,
+            "100": 0,
+            "50": 0,
+            "X": 1
+          },
+          "Score": 996000
+        },
+        "Third":{
+          "Username": "User",
+          "Combo": 5998,
+          "Accuracy": 99.85,
+          "Points":{
+            "300": 5995,
+            "200": 3,
+            "100": 0,
+            "50": 0,
+            "X": 2
+          },
+          "Score": 995000
+        }
+      }
+    }
+  ]
+}

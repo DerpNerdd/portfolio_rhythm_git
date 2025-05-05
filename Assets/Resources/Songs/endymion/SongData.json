@@ -1,0 +1,169 @@
+{
+  "songName": "ENDYMION",
+  "artist": "Hatsune Miku",
+  "mainColor": { "r": 1.0, "g": 0.0, "b": 0.0, "a": 1 },
+  "beatmaps": [
+    {
+      "displayName": "Easy",
+      "level": 4,
+      "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1 },
+      "mapperName": "Braeden",
+      "Source": "Hatsune Miku",
+      "Genre": "Vocaloid",
+      "chartFile": "endymion",
+      "bpm": 120,
+      "Language": "Japanese",
+      "Tags" : [
+        "Hatsune Miku",
+        "Vocaloid",
+        "Disappearance"
+      ],
+      "Submitted":"8 Apr 2008",
+      "Ranked": "26 Mar 2025",
+      "HPDrain": 5.5,
+      "Accuracy": 4,
+      "StarDifficulty": 4.00,
+      "SuccessRate": 87.5,
+      "UserRating": {
+        "Red": 10.5,
+        "Green": 86.5
+      },
+      "RatingSpread": {
+        "DarkRedRec": 0.1,
+        "RedRec": 0.1,
+        "DarkOrgRec": 0.2,
+        "OrgRec": 0.3,
+        "DarkYellowRec": 0.2,
+        "YellowRec": 0.2,
+        "DarkGreenRec": 0.5,
+        "GreenRec": 0.7,
+        "LightGreenRec": 0.75,
+        "LightestGreenRec": 1
+      },
+      "TotalPlayCount": 5932984,
+      "DifficultyPlayCount": 324432,
+      "Leaderboard":{
+        "First":{
+          "Username": "User",
+          "Combo": 1000,
+          "Accuracy": 99.95,
+          "Points":{
+            "300": 995,
+            "200": 4,
+            "100": 1,
+            "50": 0,
+            "X": 0
+          },
+          "Score": 997000
+        },
+        "Second":{
+          "Username": "User",
+          "Combo": 999,
+          "Accuracy": 99.90,
+          "Points":{
+            "300": 995,
+            "200": 4,
+            "100": 0,
+            "50": 0,
+            "X": 1
+          },
+          "Score": 996000
+        },
+        "Third":{
+          "Username": "User",
+          "Combo": 998,
+          "Accuracy": 99.85,
+          "Points":{
+            "300": 995,
+            "200": 3,
+            "100": 0,
+            "50": 0,
+            "X": 2
+          },
+          "Score": 995000
+        }
+      }
+    },
+    {
+      "displayName": "Hard",
+      "level": 11,
+      "color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1 },
+      "mapperName": "Braeden",
+      "Source": "Hatsune Miku",
+      "Genre": "Vocaloid",
+      "chartFile": "endymion",
+      "bpm": 115,
+      "Language": "Japanese",
+      "Tags" : [
+        "Hatsune Miku",
+        "Vocaloid",
+        "Disappearance"
+      ],
+      "Submitted":"8 Apr 2008",
+      "Ranked": "26 Mar 2025",
+      "HPDrain": 11.5,
+      "Accuracy": 7,
+      "StarDifficulty": 11.00,
+      "SuccessRate": 27.5,
+      "UserRating": {
+        "Red": 87.5,
+        "Green": 12.5
+      },
+      "RatingSpread": {
+        "DarkRedRec": 0.4,
+        "RedRec": 0.5,
+        "DarkOrgRec": 0.7,
+        "OrgRec": 0.6,
+        "DarkYellowRec": 1.0,
+        "YellowRec": 0.7,
+        "DarkGreenRec": 0.3,
+        "GreenRec": 0.3,
+        "LightGreenRec": 0.2,
+        "LightestGreenRec": 0
+      },
+      "TotalPlayCount": 5932984,
+      "DifficultyPlayCount": 234423,
+      "Leaderboard":{
+        "First":{
+          "Username": "User",
+          "Combo": 6000,
+          "Accuracy": 99.95,
+          "Points":{
+            "300": 5995,
+            "200": 4,
+            "100": 1,
+            "50": 0,
+            "X": 0
+          },
+          "Score": 997000
+        },
+        "Second":{
+          "Username": "User",
+          "Combo": 5999,
+          "Accuracy": 99.90,
+          "Points":{
+            "300": 5995,
+            "200": 4,
+            "100": 0,
+            "50": 0,
+            "X": 1
+          },
+          "Score": 996000
+        },
+        "Third":{
+          "Username": "User",
+          "Combo": 5998,
+          "Accuracy": 99.85,
+          "Points":{
+            "300": 5995,
+            "200": 3,
+            "100": 0,
+            "50": 0,
+            "X": 2
+          },
+          "Score": 995000
+        }
+      }
+    }
+  ]
+}
