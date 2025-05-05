@@ -59,6 +59,10 @@ Need to optimize more for WebGL support by cutting down on shaders and removing 
 For support, email sanchez1.alan1@gmail.com or message my discord @DerpNerd.
 
 
+## Notes
+https://react-unity-webgl.dev/
+
+
 ## License
 
 [GPL-3.0 License](https://github.com/DerpNerdd/portfolio_rhythm_git?tab=GPL-3.0-1-ov-file)
