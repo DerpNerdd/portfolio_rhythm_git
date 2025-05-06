@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import Overlay from './components/Overlay';
+import UnityGame from './components/UnityGame';
+import MobileVersion from './components/MobileVersion';
+import PlayScreen from './components/PlayScreen';
 
-function App() {
+export default function App() {
+  const [started, setStarted] = useState(false);
+
+  // Always show mobile version on small devices
+  if (isMobile) {
+    return <MobileVersion />;
+  }
+
+  // Display a custom Play screen to unlock audio
+  if (!started) {
+    return <PlayScreen onStart={() => setStarted(true)} />;
+  }
+
+  // Once started, show the Unity game with decorative overlays
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Overlay>
+      <UnityGame />
+    </Overlay>
   );
 }
-
-export default App;
