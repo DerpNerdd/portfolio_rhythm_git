@@ -8,25 +8,25 @@
       "level": 12,
       "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1 },
       "mapperName": "DDRAce",
-      "Source": "Hatsune Miku",
-      "Genre": "Vocaloid",
+      "Source": "DDR",
+      "Genre": "Breakcore",
       "chartFile": "max360",
       "bpm": 120,
-      "Language": "Japanese",
+      "Language": "Instrumental",
       "Tags" : [
-        "Hatsune Miku",
-        "Vocaloid",
-        "Disappearance"
+        "DDR Ace",
+        "Max 360",
+        "Bemani"
       ],
-      "Submitted":"8 Apr 2008",
-      "Ranked": "26 Mar 2025",
-      "HPDrain": 5.5,
+      "Submitted":"17 Oct 2018",
+      "Ranked": "17 Jul 2024",
+      "HPDrain": 7.5,
       "Accuracy": 4,
-      "StarDifficulty": 4.00,
-      "SuccessRate": 87.5,
+      "StarDifficulty": 12.00,
+      "SuccessRate": 57.5,
       "UserRating": {
-        "Red": 10.5,
-        "Green": 86.5
+        "Red": 60.5,
+        "Green": 36.5
       },
       "RatingSpread": {
         "DarkRedRec": 0.1,
@@ -38,7 +38,7 @@
         "DarkGreenRec": 0.5,
         "GreenRec": 0.7,
         "LightGreenRec": 0.75,
-        "LightestGreenRec": 1
+        "LightestGreenRec": 0.7
       },
       "TotalPlayCount": 5932984,
       "DifficultyPlayCount": 324432,
@@ -88,22 +88,22 @@
       "displayName": "Hard",
       "level": 18,
       "color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1 },
-      "mapperName": "Braeden",
-      "Source": "Hatsune Miku",
-      "Genre": "Vocaloid",
+      "mapperName": "DDRAce",
+      "Source": "DDR",
+      "Genre": "Breakcore",
       "chartFile": "max360",
-      "bpm": 115,
-      "Language": "Japanese",
+      "bpm": 120,
+      "Language": "Instrumental",
       "Tags" : [
-        "Hatsune Miku",
-        "Vocaloid",
-        "Disappearance"
+        "DDR Ace",
+        "Max 360",
+        "Bemani"
       ],
-      "Submitted":"8 Apr 2008",
-      "Ranked": "26 Mar 2025",
+      "Submitted":"17 Oct 2018",
+      "Ranked": "17 Jul 2024",
       "HPDrain": 11.5,
       "Accuracy": 7,
-      "StarDifficulty": 11.00,
+      "StarDifficulty": 18.00,
       "SuccessRate": 27.5,
       "UserRating": {
         "Red": 87.5,

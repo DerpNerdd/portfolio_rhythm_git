@@ -1,32 +1,33 @@
 {
   "songName": "Possession 20th",
-  "artist": "Hatsune Miku",
+  "artist": "BEMANI",
   "mainColor": { "r": 1.0, "g": 0.0, "b": 0.0, "a": 1 },
   "beatmaps": [
     {
       "displayName": "Easy",
-      "level": 4,
+      "level": 11,
       "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1 },
-      "mapperName": "Braeden",
-      "Source": "Hatsune Miku",
-      "Genre": "Vocaloid",
+      "mapperName": "Sata Fujimari",
+      "Source": "DDR",
+      "Genre": "Breakcore",
       "chartFile": "possession20",
-      "bpm": 120,
-      "Language": "Japanese",
+      "bpm": 190,
+      "Language": "Instrumental",
       "Tags" : [
-        "Hatsune Miku",
-        "Vocaloid",
-        "Disappearance"
+        "DDR",
+        "Possession",
+        "BEMANI",
+        "20th Anniversary"
       ],
-      "Submitted":"8 Apr 2008",
-      "Ranked": "26 Mar 2025",
-      "HPDrain": 5.5,
-      "Accuracy": 4,
-      "StarDifficulty": 4.00,
-      "SuccessRate": 87.5,
+      "Submitted":"3 Oct 2018",
+      "Ranked": "4 Apr 2021",
+      "HPDrain": 7.5,
+      "Accuracy": 8,
+      "StarDifficulty": 11.00,
+      "SuccessRate": 77.5,
       "UserRating": {
-        "Red": 10.5,
-        "Green": 86.5
+        "Red": 20.5,
+        "Green": 76.5
       },
       "RatingSpread": {
         "DarkRedRec": 0.1,
@@ -40,8 +41,8 @@
         "LightGreenRec": 0.75,
         "LightestGreenRec": 1
       },
-      "TotalPlayCount": 5932984,
-      "DifficultyPlayCount": 324432,
+      "TotalPlayCount": 1328973,
+      "DifficultyPlayCount": 13287,
       "Leaderboard":{
         "First":{
           "Username": "User",
@@ -86,24 +87,25 @@
     },
     {
       "displayName": "Hard",
-      "level": 11,
+      "level": 18,
       "color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1 },
-      "mapperName": "Braeden",
-      "Source": "Hatsune Miku",
-      "Genre": "Vocaloid",
+      "mapperName": "Sata Fujimari",
+      "Source": "DDR",
+      "Genre": "Breakcore",
       "chartFile": "possession20",
-      "bpm": 115,
-      "Language": "Japanese",
+      "bpm": 190,
+      "Language": "Instrumental",
       "Tags" : [
-        "Hatsune Miku",
-        "Vocaloid",
-        "Disappearance"
+        "DDR",
+        "Possession",
+        "BEMANI",
+        "20th Anniversary"
       ],
-      "Submitted":"8 Apr 2008",
-      "Ranked": "26 Mar 2025",
+      "Submitted":"3 Oct 2018",
+      "Ranked": "4 Apr 2021",
       "HPDrain": 11.5,
-      "Accuracy": 7,
-      "StarDifficulty": 11.00,
+      "Accuracy": 10,
+      "StarDifficulty": 18.00,
       "SuccessRate": 27.5,
       "UserRating": {
         "Red": 87.5,
@@ -121,8 +123,8 @@
         "LightGreenRec": 0.2,
         "LightestGreenRec": 0
       },
-      "TotalPlayCount": 5932984,
-      "DifficultyPlayCount": 234423,
+      "TotalPlayCount": 1328973,
+      "DifficultyPlayCount": 13287,
       "Leaderboard":{
         "First":{
           "Username": "User",

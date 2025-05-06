@@ -1,32 +1,32 @@
 {
   "songName": "ENDYMION",
-  "artist": "Hatsune Miku",
+  "artist": "fallen shepherd ft.RabbiTonStrings",
   "mainColor": { "r": 1.0, "g": 0.0, "b": 0.0, "a": 1 },
   "beatmaps": [
     {
       "displayName": "Easy",
-      "level": 4,
+      "level": 13,
       "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1 },
-      "mapperName": "Braeden",
-      "Source": "Hatsune Miku",
-      "Genre": "Vocaloid",
+      "mapperName": "fallen shepherd",
+      "Source": "DDR",
+      "Genre": "Breakcore",
       "chartFile": "endymion",
-      "bpm": 120,
-      "Language": "Japanese",
+      "bpm": 220,
+      "Language": "Instrumental",
       "Tags" : [
-        "Hatsune Miku",
-        "Vocaloid",
-        "Disappearance"
+        "DDR",
+        "Endymion",
+        "Challenge"
       ],
-      "Submitted":"8 Apr 2008",
-      "Ranked": "26 Mar 2025",
-      "HPDrain": 5.5,
+      "Submitted":"13 Jul 2017",
+      "Ranked": "9 Jul 2024",
+      "HPDrain": 8.5,
       "Accuracy": 4,
-      "StarDifficulty": 4.00,
-      "SuccessRate": 87.5,
+      "StarDifficulty": 13.00,
+      "SuccessRate": 67.5,
       "UserRating": {
-        "Red": 10.5,
-        "Green": 86.5
+        "Red": 40.5,
+        "Green": 56.5
       },
       "RatingSpread": {
         "DarkRedRec": 0.1,
@@ -35,13 +35,13 @@
         "OrgRec": 0.3,
         "DarkYellowRec": 0.2,
         "YellowRec": 0.2,
-        "DarkGreenRec": 0.5,
-        "GreenRec": 0.7,
-        "LightGreenRec": 0.75,
-        "LightestGreenRec": 1
+        "DarkGreenRec": 0.8,
+        "GreenRec": 0.2,
+        "LightGreenRec": 0.5,
+        "LightestGreenRec": 0
       },
-      "TotalPlayCount": 5932984,
-      "DifficultyPlayCount": 324432,
+      "TotalPlayCount": 9238670,
+      "DifficultyPlayCount": 347289,
       "Leaderboard":{
         "First":{
           "Username": "User",
@@ -86,43 +86,43 @@
     },
     {
       "displayName": "Hard",
-      "level": 11,
+      "level": 18,
       "color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1 },
-      "mapperName": "Braeden",
-      "Source": "Hatsune Miku",
-      "Genre": "Vocaloid",
+      "mapperName": "fallen shepherd",
+      "Source": "DDR",
+      "Genre": "Breakcore",
       "chartFile": "endymion",
-      "bpm": 115,
-      "Language": "Japanese",
+      "bpm": 220,
+      "Language": "Instrumental",
       "Tags" : [
-        "Hatsune Miku",
-        "Vocaloid",
-        "Disappearance"
+        "DDR",
+        "Endymion",
+        "Challenge"
       ],
-      "Submitted":"8 Apr 2008",
-      "Ranked": "26 Mar 2025",
+      "Submitted":"13 Jul 2017",
+      "Ranked": "9 Jul 2024",
       "HPDrain": 11.5,
-      "Accuracy": 7,
-      "StarDifficulty": 11.00,
+      "Accuracy": 9,
+      "StarDifficulty": 18.00,
       "SuccessRate": 27.5,
       "UserRating": {
-        "Red": 87.5,
-        "Green": 12.5
+        "Red": 97.5,
+        "Green": 2.5
       },
       "RatingSpread": {
         "DarkRedRec": 0.4,
         "RedRec": 0.5,
         "DarkOrgRec": 0.7,
-        "OrgRec": 0.6,
+        "OrgRec": 1,
         "DarkYellowRec": 1.0,
-        "YellowRec": 0.7,
+        "YellowRec": 1,
         "DarkGreenRec": 0.3,
         "GreenRec": 0.3,
         "LightGreenRec": 0.2,
         "LightestGreenRec": 0
       },
-      "TotalPlayCount": 5932984,
-      "DifficultyPlayCount": 234423,
+      "TotalPlayCount": 9238670,
+      "DifficultyPlayCount": 1263990,
       "Leaderboard":{
         "First":{
           "Username": "User",

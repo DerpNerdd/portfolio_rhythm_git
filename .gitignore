@@ -19,6 +19,8 @@
 *.data.br
 *.data.gz
 
+/FinishedBuild/
+
 # Recordings can get excessive in size
 /[Rr]ecordings/
 
