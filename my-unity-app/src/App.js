@@ -1,24 +1,27 @@
+// src/App.js
 import React, { useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import Overlay from './components/Overlay';
-import UnityGame from './components/UnityGame';
+
+import PlayScreen    from './components/PlayScreen';
 import MobileVersion from './components/MobileVersion';
-import PlayScreen from './components/PlayScreen';
+import Overlay       from './components/Overlay';
+import UnityGame     from './components/UnityGame';
 
 export default function App() {
   const [started, setStarted] = useState(false);
 
-  // Always show mobile version on small devices
+  // MOBILE FLOW: PlayScreen → MobileVersion
   if (isMobile) {
-    return <MobileVersion />;
+    return !started
+      ? <PlayScreen onStart={() => setStarted(true)} />
+      : <MobileVersion />;
   }
 
-  // Display a custom Play screen to unlock audio
+  // DESKTOP FLOW: PlayScreen → Overlay + UnityGame
   if (!started) {
     return <PlayScreen onStart={() => setStarted(true)} />;
   }
 
-  // Once started, show the Unity game with decorative overlays
   return (
     <Overlay>
       <UnityGame />
