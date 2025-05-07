@@ -1,0 +1,119 @@
+.skills-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    padding: 2rem;
+    padding-bottom: 5rem;          
+    box-sizing: border-box;
+    background: linear-gradient(#871241, #55005D);
+    border: 16px solid transparent;
+    border-image: linear-gradient(#FF00BB, #7A60FB) 1;
+    overflow: hidden;
+}
+
+.back-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.back-icon {
+    display: block;
+    width: 80px;    
+    height: auto;
+}
+
+
+.slider-container {
+    flex: 1;                       
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+}
+
+.skills-slider {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease;
+}
+
+.skill-slide {
+    flex: 0 0 100%;            
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding-top: 1rem;
+}
+
+.skills-title {
+    color: #fff;
+    font-size: 2rem;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+.skill-image-container {
+    margin-bottom: 1.5rem;
+}
+
+.skill-img {
+    max-width: 200px;
+    height: auto;
+}
+
+.skill-description {
+    flex: 1;                       
+    width: 100%;
+    max-width: 600px;
+    margin: 0 1rem 2rem;
+    color: #fff;
+    font-size: 1.25rem;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.skills-nav {
+    position: absolute;
+    bottom: 1.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2rem;
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-button img {
+    width: 64px;
+    height: 64px;
+}
+
+@media (min-width: 768px) {
+    .skills-title {
+    font-size: 3rem;  
+    }
+
+    .skill-img {
+    max-width: 300px;    
+    }
+
+    .skill-description {
+    font-size: 1.5rem;     
+    }
+}
