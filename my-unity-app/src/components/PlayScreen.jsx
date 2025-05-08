@@ -1,54 +1,50 @@
 import React from 'react';
 
 export default function PlayScreen({ onStart }) {
-  const buttonSize = 200; // adjust for a larger circle
+const buttonSize = 200; 
 
-  return (
+return (
     <div style={{
-      width: '100vw',
-      height: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      background: '#000',
-      position: 'relative',
-      overflow: 'hidden'
+    width: '100vw',
+    height: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: '#000',
+    position: 'relative',
+    overflow: 'hidden'
     }}>
-      {/* Define breathing keyframes */}
-      <style>{`
+    <style>{`
         @keyframes breathing {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
         }
-      `}</style>
+    `}</style>
 
-      {/* Full-screen decorative background (optional) */}
-      <img
+    <img
         src="/images/play-background.jpg"
         alt="Play Background"
         style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          top: 0,
-          left: 0,
-          zIndex: 0,
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        top: 0,
+        left: 0,
+        zIndex: 0,
         }}
-      />
+    />
 
-      {/* Centered container for button + text */}
-      <div style={{
+    <div style={{
         position: 'relative',
         zIndex: 1,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-      }}>
-        {/* Breathing play button */}
+    }}>
         <button
-          onClick={onStart}
-          style={{
+        onClick={onStart}
+        style={{
             width: `${buttonSize}px`,
             height: `${buttonSize}px`,
             borderRadius: '50%',
@@ -63,20 +59,19 @@ export default function PlayScreen({ onStart }) {
             justifyContent: 'center',
             outline: 'none',
             animation: 'breathing 3s ease-in-out infinite',
-          }}
+        }}
         >
-          Play
+        Play
         </button>
-        {/* Warning text */}
         <p style={{
-          marginTop: '1rem',
-          color: '#fff',
-          fontSize: '0.8rem',
-          fontStyle: 'italic',
+        marginTop: '1rem',
+        color: '#fff',
+        fontSize: '0.8rem',
+        fontStyle: 'italic',
         }}>
-          Audio will play, you have been warned
+        Audio will play, you have been warned
         </p>
-      </div>
     </div>
-  );
+    </div>
+);
 }

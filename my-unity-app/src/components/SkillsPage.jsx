@@ -1,4 +1,3 @@
-// src/components/SkillsPage.jsx
 import React, { useState } from 'react';
 import './CSS/SkillsPage.css';
 
@@ -68,7 +67,6 @@ export default function SkillsPage({ onBack }) {
 
     return (
     <div className="skills-page">
-        {/* background audio */}
         <audio src="/audio/Depression Shop.mp3" autoPlay loop />
 
         <button className="back-button" onClick={onBack}>

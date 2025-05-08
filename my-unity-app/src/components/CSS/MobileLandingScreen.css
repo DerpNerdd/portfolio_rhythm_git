@@ -38,9 +38,9 @@
   z-index: 2;
 }
 .circle-container.clicked {
-  top: -5vh;
+  top: -5%;
   left: auto;
-  right: -10vw;
+  right: -10%;
   transform: scale(0.5);
 }
 .rect-container {
@@ -76,4 +76,70 @@
 .rect-label {
   margin-top: 8px;
   color: #fff; font-size: 1rem;
+}
+.circle-container.clicked + .message-text,
+.message-text.show {
+  opacity: 1;
+}
+
+.message-text {
+  position: absolute;
+  top: 30%;
+  right: 10%;
+  left: auto;
+  font-size: 1rem;
+  color: white;
+  transform: rotate(90deg);
+  transform-origin: top right;
+  opacity: 0;
+  transition: opacity 1s ease;
+  z-index: 3;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+/* Modal box */
+.modal-content {
+  background: #222;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  color: white;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+}
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 6px;
+}
+.modal-content button {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #6644CC;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.modal-content button:hover {
+  background: #8a66ea;
 }

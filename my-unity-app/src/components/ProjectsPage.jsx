@@ -1,4 +1,3 @@
-// src/components/ProjectsPage.jsx
 import React, { useEffect, useRef } from 'react';
 import './CSS/ProjectsPage.css';
 

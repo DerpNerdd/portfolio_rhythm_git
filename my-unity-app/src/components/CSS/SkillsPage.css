@@ -11,7 +11,7 @@
     background: linear-gradient(#871241, #55005D);
     border: 16px solid transparent;
     border-image: linear-gradient(#FF00BB, #7A60FB) 1;
-    overflow: hidden;
+    overflow-y: scroll !important;
 }
 
 .back-button {

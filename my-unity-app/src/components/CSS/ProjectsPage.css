@@ -4,18 +4,18 @@
     height: 100vh;
     overflow: hidden;
     background: black;
-  }
-  
-  .star-canvas {
+}
+
+.star-canvas {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 0;
     width: 100%;
     height: 100%;
-  }
-  
-  .back-button {
+}
+
+.back-button {
     position: absolute;
     top: 0;
     left: 0;
@@ -25,15 +25,15 @@
     padding: 0;
     margin: 0;
     cursor: pointer;
-  }
-  
-  .back-icon {
+}
+
+.back-icon {
     display: block;
     width: 80px;
     height: auto;
-  }
-  
-  .projects-title {
+}
+
+.projects-title {
     position: relative;
     z-index: 1;
     max-width: 800px;
@@ -42,20 +42,20 @@
     color: rgba(255,255,255,0.3);
     font-size: 2.5rem;
     letter-spacing: 1rem;
-  }
-  
-  .projects-title span {
+}
+
+.projects-title span {
     display: inline-block;
     animation: wave 1.5s ease-in-out infinite;
     animation-delay: calc(var(--i) * 0.1s);
-  }
-  
-  @keyframes wave {
+}
+
+@keyframes wave {
     0%, 100% { transform: translateY(0); }
     50%      { transform: translateY(-10px); }
-  }
-  
-  .projects-list {
+}
+
+.projects-list {
     position: relative;
     z-index: 1;
     list-style: none;
@@ -66,27 +66,26 @@
     height: calc(100vh - 14rem);
     overflow-y: auto;
     text-align: center;
-  }
-  
-  .projects-list li {
+}
+
+.projects-list li {
     margin: 0.75rem 0;
-  }
-  
-  .project-link {
+}
+
+.project-link {
     color: white;
     text-decoration: none;
     font-size: 1.5rem;
     text-shadow: 0 0 5px rgba(255,255,255,0.5);
     transition: transform 0.2s ease, text-shadow 0.2s ease;
-  }
-  
-  .project-link:hover {
+}
+
+.project-link:hover {
     transform: scale(1.1);
     text-shadow: 0 0 20px white;
-  }
-  
-  .project-link:active {
+}
+
+.project-link:active {
     transform: scale(1.2);
     text-shadow: 0 0 30px white;
-  }
-  
+}

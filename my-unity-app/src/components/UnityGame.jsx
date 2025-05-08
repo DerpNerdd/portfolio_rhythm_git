@@ -26,7 +26,7 @@ export default function UnityGame() {
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
           display: "flex", alignItems: "center", justifyContent: "center",
-          background: "#000", color: "#fff"
+          background: "#000", color: "#fff", overflow: "hidden",
         }}>
           Loading… {Math.round(loadingProgression * 100)}%
         </div>

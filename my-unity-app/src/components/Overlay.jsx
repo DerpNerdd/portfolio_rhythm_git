@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Paths to your decorative images in public/
 const LEFT_ART    = '/images/leftimage.jpg';
 const RIGHT_ART   = '/images/rightimage.jpg';
 const TOP_ART     = '/images/topimage.jpg';
@@ -33,10 +32,8 @@ export default function Overlay({ children }) {
         overflow: 'hidden',
       }}
     >
-      {/* Underlying game or content */}
       {children}
 
-      {/* Left decorative overlay */}
       {dims.sideWidth > 0 && (
         <div
           style={{
@@ -54,7 +51,6 @@ export default function Overlay({ children }) {
         />
       )}
 
-      {/* Right decorative overlay */}
       {dims.sideWidth > 0 && (
         <div
           style={{
@@ -72,7 +68,6 @@ export default function Overlay({ children }) {
         />
       )}
 
-      {/* Top decorative overlay */}
       {dims.barHeight > 0 && (
         <div
           style={{
@@ -90,7 +85,6 @@ export default function Overlay({ children }) {
         />
       )}
 
-      {/* Bottom decorative overlay */}
       {dims.barHeight > 0 && (
         <div
           style={{
