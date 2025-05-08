@@ -90,7 +90,12 @@ Make sure you have the latest version of React installed along with its dependen
 - [3D Model for "Projects" section](https://sketchfab.com/3d-models/saturn-c09a1970148c43ad99db134a9d6d00b5)
 
 
+## Mobile Version
 
+While mobile version does not include the game, it includes:
+- New drawings
+- A message feature to send emails to me
+- A redesign of the entire WebGL version
 
 ## Support
 
