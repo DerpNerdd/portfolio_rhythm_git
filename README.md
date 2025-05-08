@@ -30,6 +30,8 @@ Install portfolio_rhythm_git through git:
 
 Install Unity Hub or directly install Unity version 2022.3.6f1 LFS and open the project there
 
+While the settings should be saved, make a WebGL build and disable the gzip formatting for faster build times, preferably call the build "FinishedBuild"
+
 If wishing to edit the React Portion:
 
 ```bash
@@ -38,6 +40,8 @@ If wishing to edit the React Portion:
 ```
 
 Make sure you have the latest version of React installed along with its dependencies 
+
+The FinishedBuild WebGL folder should rest inside the public folder
     
 ## Roadmap
 
