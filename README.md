@@ -49,7 +49,7 @@ Make sure you have the latest version of React installed along with its dependen
 - Finish the Projects section: 5/4/2025
 - Finish the React Web Port: 5/6/2025
 - Finish the React Mobile version: 5/7/2025
-- Done: 5/9/2025
+- Done: 5/7/2025
 
 
 ## Screenshots
